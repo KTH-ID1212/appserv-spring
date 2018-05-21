@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="358f9096-80ed-450d-b319-694770eab8f5" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/config/ServerProperties.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/controller/ContextRootController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -48,8 +41,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="399">
+              <caret line="29" column="34" selection-start-line="29" selection-start-column="34" selection-end-line="29" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -154,7 +147,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="40" />
-    <option name="y" value="-1091" />
+    <option name="y" value="-11" />
     <option name="width" value="1881" />
     <option name="height" value="1092" />
   </component>
@@ -345,12 +338,12 @@
       <option name="presentableId" value="Default" />
       <updated>1526641733729</updated>
       <workItem from="1526641738614" duration="5265000" />
-      <workItem from="1526887540917" duration="18382000" />
+      <workItem from="1526887540917" duration="19106000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23647000" />
+    <option name="totallyTimeSpent" value="24371000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -434,14 +427,14 @@
             <node x="" y="">se.kth.id1212.appserv.bank.Main</node>
             <node x="" y="">se.kth.id1212.appserv.bank.config.ServerProperties</node>
             <node x="" y="">org.springframework.boot.autoconfigure.SpringBootApplication</node>
-            <node x="" y="" />
+            <node x="" y="">fileset=appservspring/Main MVC</node>
           </nodes>
           <notes />
           <edges />
           <settings layout="Hierarchic Group" zoom="1.0" x="352.5" y="43.0" />
           <SelectedNodes />
           <Categories>
-            <Category />
+            <Category>Show filesets as groups</Category>
           </Categories>
         </state>
       </provider>
@@ -477,6 +470,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/logback-spring.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="23" column="58" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/config/ServerProperties.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="245">
@@ -487,17 +487,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/logback-spring.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="23" column="58" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/se/kth/id1212/appserv/bank/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="399">
+          <caret line="29" column="34" selection-start-line="29" selection-start-column="34" selection-end-line="29" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -521,7 +514,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited />
+          <last-edited>Spring (appservspring)|Spring</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -581,7 +574,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited />
+          <last-edited>Maven: ch.qos.logback:logback-classic:1.2.3</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

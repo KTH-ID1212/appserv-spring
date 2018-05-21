@@ -1,6 +1,5 @@
 package se.kth.id1212.appserv.bank;
 
-import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server
         .ConfigurableServletWebServerFactory;
+import org.springframework.context.annotation.Bean;
 import se.kth.id1212.appserv.bank.config.ServerProperties;
 
 /**
@@ -16,9 +16,9 @@ import se.kth.id1212.appserv.bank.config.ServerProperties;
  */
 @SpringBootApplication
 public class Main {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     @Autowired
     private ServerProperties serverProps;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     /**
      * Starts the bank application.
@@ -26,13 +26,8 @@ public class Main {
      * @param args There are no command line parameters.
      */
     public static void main(String[] args) {
-        LOGGER.debug("debug enabled: " + LOGGER.isDebugEnabled());
-        LOGGER.debug("trace enabled: " + LOGGER.isTraceEnabled());
-        LOGGER.debug("logger name: " + LOGGER.getName());
-        ((ch.qos.logback.classic.Logger)LOGGER).setLevel(Level.TRACE);
-        LOGGER.debug("debug enabled: " + LOGGER.isDebugEnabled());
-        LOGGER.debug("trace enabled: " + LOGGER.isTraceEnabled());
-        LOGGER.debug("logger name: " + LOGGER.getName());
+        LOGGER.debug("log level is set after app.run(args), the default " +
+                     "level (debug) is used here: " + LOGGER.isTraceEnabled());
         SpringApplication app = new SpringApplication(Main.class);
         app.setBanner((environment, sourceClass, out) -> {
             out.println("\n>>>>>>>>>>>>>> RUN IN TERMINAL TO SEE FRAMEWORK" +
@@ -44,10 +39,10 @@ public class Main {
         app.run(args);
     }
 
+    @Bean
     public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
     getWebServerFactoryCustomizer() {
-        LOGGER.error("Setting WebServerFactory.");
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        LOGGER.trace("Setting WebServerFactory.");
         return serverFactory -> {
             LOGGER.trace("Setting context root.");
             serverFactory.setContextPath(serverProps.getContextRoot());
