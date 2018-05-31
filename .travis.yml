@@ -2,3 +2,8 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
+after_script:
+ - cat target/site/pmd/cpd.xml
+ - cat target/site/pmd/pmd.xml
+ - cat target/site/findbugs/findbugsXml.xml
+ 
