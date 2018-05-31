@@ -22,8 +22,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,13 +54,77 @@
                     <execution>
                         <goals>
                             <goal>resolve</goal>
+                            <goal>tree</goal>
+                            <goal>list-repositories</goal>
+                            <goal>analyze-only</goal>
+                            <goal>analyze-duplicate</goal>
+                            <goal>display-ancestors</goal>
                         </goals>
                         <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.9.0</version>
+                <configuration>
+                    <!--<analysisCache>true</analysisCache> Can not be used after mvn:clean, since cach is removed.-->
+                    <verbose>true</verbose>
+                    <failOnViolation>false</failOnViolation>
+                    <minimumTokens>10</minimumTokens>
+                    <outputDirectory>${project.build.directory}/site/pmd</outputDirectory>
+                    <targetDirectory>${project.build.directory}/site/pmd</targetDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.5</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                    <failOnError>false</failOnError>
+                    <findbugsXmlOutputDirectory>${project.build.directory}/site/findbugs</findbugsXmlOutputDirectory>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>LATEST</version> <!-- Auto-update to the latest stable -->
+                        </plugin>
+                    </plugins>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <repositories>
         <repository>
