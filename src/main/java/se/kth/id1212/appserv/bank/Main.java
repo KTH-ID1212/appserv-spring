@@ -33,7 +33,7 @@ public class Main {
             out.println("\n>>>>>>>>>>>>>> RUN IN TERMINAL TO SEE FRAMEWORK" +
                         "VERSIONS. USE 'mvn spring-boot:run' TO SHOW VERSIONS" +
                         " AND START. USE FOR EXAMPLE 'mvn dependency:resolve" +
-                        " -Dsort' TO ONLY SEE DEPENDENCIES. " +
+                        " -Dsort' TO JUST SEE DEPENDENCIES. " +
                         "<<<<<<<<<<<<<<<<<\n");
         });
         app.run(args);
