@@ -2,3 +2,10 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk10
+after_script:
+ - echo "Current directory is $(pwd)"
+ - ls
+ - cat target/site/pmd/cpd.xml
+ - cat target/site/pmd/pmd.xml
+ - cat target/site/findbugs/findbugsXml.xml
+ 
