@@ -18,6 +18,8 @@ deploy:
    script:
      - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
      - docker push sekthid1212/appserv-spring-dev:1.0
+   on:
+     branch: develop
 
 after_script:
   - docker images
