@@ -3,28 +3,31 @@ sudo: required
 language: java
 
 jdk:
- - oraclejdk8
- - oraclejdk10
+  - oraclejdk8
+  - oraclejdk10
 
 services:
- - docker
+  - docker
 
 before_deploy:
- - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 deploy:
- - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
- - docker push sekthid1212/appserv-spring-dev:1.0
+   skip_cleanup: true
+   provider: script
+   script:
+     - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
+     - docker push sekthid1212/appserv-spring-dev:1.0
 
 after_script:
- - docker images
- - echo "Current directory is $(pwd)"
- - ls
- - cat target/site/pmd/cpd.xml
- - cat target/site/pmd/pmd.xml
- - cat target/site/findbugs/findbugsXml.xml
+  - docker images
+  - echo "Current directory is $(pwd)"
+  - ls
+  - cat target/site/pmd/cpd.xml
+  - cat target/site/pmd/pmd.xml
+  - cat target/site/findbugs/findbugsXml.xml
 
 env:
   global:
-  - secure: K7var8y9iSHchw7DkysTfZYvUJa0mMRHJMpslGWakma4q0FwYM2jOiOFqB1Sk5Y0b4y1wBy7qHlw5/ueDUnQQ0fUXRJW+61QTjv7B7Yd8EzOErXeuWyD8xDwBikKYIHOcqzYi2Dh1y63XRsK8Ur8yECKp7LMzdT+EulsR8FCCsKOr1e84AOZf+k5C+DcbP7pjszU8eKc4RBxw2TdOKRygCx64k0Ayj9ll7Y0iThcARLiCmabAjxhTX7SC2n+uRgoHy3imwDsJVBNDh6awxceamGQSxL6JdxhkV7Pqu54ea6TtESKxy+1OicsqHVtbg26LFUsq/p2no4xpiwQJZ+TGJMXEt7tW1qbIJHs7D0M//9wunxuxjyzMpJGIbDaely/axsq9Q5+3nKK4uuB7NoXkDmibx4KmnT8IJoMP2ymncwmgbZDV4TwS6jrlBd+nvR6CLbNqMmdSXGhoWBJzv5cRRpfhlIhqmGenlW547siteZ24Alhs1l6qmS6h+W/RmjqmBctll6J7/hwwn/0We4rxp3LHMs6EjV25vIvx/o3lP8usDUR3zEbzY34xcjeMMIpGwifbID/8HY03HCSEfHkMDmP6dGGs/W5x8EGvCqUm6WRdtwgPkOPz+2RihpamvroGaNhTh4PsLc8UzuBIBOuu3EvVsokgQuIYJdLY8t8yA8=
-  - secure: gdLb7X/vN6+DNkv3vhQ1kasYDiIJZBp6Mr4unG7JHC2n29H3hF0oY7PHEoeQk5UGzqPAUgoy+03FKAHZfNUOE+8ZOp31RdK/pgjUeNpxKiA7NGVF+uxa1joHo5DcZQZfhVla6HL4+19Wela40q4TtC3Zbs8xbeKVx9FdNs6E/m/Gli+ZbCqzTCmyRhm+oZGE0iEvPnMd9EiXmZD+i1/AafKD6+x6s0us9OpD4X0noNFYVVl/udYqUzFmTtiSYZ1cIJLl53X9pZf17bkKZF+2XS44OpeO7HbqyvIgISg0jBdAtuiSp7nubIP7O9gjQvRl7ENjrGPr5He+LODnijVWimqqzyMbZhk3ZUCX/iNGIJMsDMywJWQVr8nxq2ZKo0kff341+v4U1D7tivscAHft0XhC57hOOdHshDt7YqozFHYPRlN6x1WJECpUlPK0yCgCAXaTvkyGfsO1ZUWJfvwG9fR4RInB3Q35jxi7KpSprNUur32hs9IdqzUwsxoOjJAoLychFEwq+Wy8NFpZ6/gVbyN2YW+/ivAiDCPYJ4bNe2Dkv59wR7s/u8j1ERECInA3mLFK6HdXwsCUw48TQflTA0hJpsn+bW0XGdGjl0UItiBhkg1tQ34N78GZR/zhr52RpYjS8hqfqtLIriP2iviDsi7qYOjk+9R2FeAqBq3gRyw=
+    - secure: K7var8y9iSHchw7DkysTfZYvUJa0mMRHJMpslGWakma4q0FwYM2jOiOFqB1Sk5Y0b4y1wBy7qHlw5/ueDUnQQ0fUXRJW+61QTjv7B7Yd8EzOErXeuWyD8xDwBikKYIHOcqzYi2Dh1y63XRsK8Ur8yECKp7LMzdT+EulsR8FCCsKOr1e84AOZf+k5C+DcbP7pjszU8eKc4RBxw2TdOKRygCx64k0Ayj9ll7Y0iThcARLiCmabAjxhTX7SC2n+uRgoHy3imwDsJVBNDh6awxceamGQSxL6JdxhkV7Pqu54ea6TtESKxy+1OicsqHVtbg26LFUsq/p2no4xpiwQJZ+TGJMXEt7tW1qbIJHs7D0M//9wunxuxjyzMpJGIbDaely/axsq9Q5+3nKK4uuB7NoXkDmibx4KmnT8IJoMP2ymncwmgbZDV4TwS6jrlBd+nvR6CLbNqMmdSXGhoWBJzv5cRRpfhlIhqmGenlW547siteZ24Alhs1l6qmS6h+W/RmjqmBctll6J7/hwwn/0We4rxp3LHMs6EjV25vIvx/o3lP8usDUR3zEbzY34xcjeMMIpGwifbID/8HY03HCSEfHkMDmP6dGGs/W5x8EGvCqUm6WRdtwgPkOPz+2RihpamvroGaNhTh4PsLc8UzuBIBOuu3EvVsokgQuIYJdLY8t8yA8=
+    - secure: gdLb7X/vN6+DNkv3vhQ1kasYDiIJZBp6Mr4unG7JHC2n29H3hF0oY7PHEoeQk5UGzqPAUgoy+03FKAHZfNUOE+8ZOp31RdK/pgjUeNpxKiA7NGVF+uxa1joHo5DcZQZfhVla6HL4+19Wela40q4TtC3Zbs8xbeKVx9FdNs6E/m/Gli+ZbCqzTCmyRhm+oZGE0iEvPnMd9EiXmZD+i1/AafKD6+x6s0us9OpD4X0noNFYVVl/udYqUzFmTtiSYZ1cIJLl53X9pZf17bkKZF+2XS44OpeO7HbqyvIgISg0jBdAtuiSp7nubIP7O9gjQvRl7ENjrGPr5He+LODnijVWimqqzyMbZhk3ZUCX/iNGIJMsDMywJWQVr8nxq2ZKo0kff341+v4U1D7tivscAHft0XhC57hOOdHshDt7YqozFHYPRlN6x1WJECpUlPK0yCgCAXaTvkyGfsO1ZUWJfvwG9fR4RInB3Q35jxi7KpSprNUur32hs9IdqzUwsxoOjJAoLychFEwq+Wy8NFpZ6/gVbyN2YW+/ivAiDCPYJ4bNe2Dkv59wR7s/u8j1ERECInA3mLFK6HdXwsCUw48TQflTA0hJpsn+bW0XGdGjl0UItiBhkg1tQ34N78GZR/zhr52RpYjS8hqfqtLIriP2iviDsi7qYOjk+9R2FeAqBq3gRyw=
