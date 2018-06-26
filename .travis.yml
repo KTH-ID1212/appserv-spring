@@ -1,20 +1,30 @@
 sudo: required
+
 language: java
+
 jdk:
-- oraclejdk8
-- oraclejdk10
+ - oraclejdk8
+ - oraclejdk10
+
 services:
-- docker
+ - docker
+
+before_deploy:
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 deploy:
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
-- docker push sekthid1212/appserv-spring-dev:1.0
+ skip_cleanup: true
+ - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
+ - docker push sekthid1212/appserv-spring-dev:1.0
+
 after_script:
-- echo "Current directory is $(pwd)"
-- ls
-- cat target/site/pmd/cpd.xml
-- cat target/site/pmd/pmd.xml
-- cat target/site/findbugs/findbugsXml.xml
+ - docker images
+ - echo "Current directory is $(pwd)"
+ - ls
+ - cat target/site/pmd/cpd.xml
+ - cat target/site/pmd/pmd.xml
+ - cat target/site/findbugs/findbugsXml.xml
+
 env:
   global:
   - secure: K7var8y9iSHchw7DkysTfZYvUJa0mMRHJMpslGWakma4q0FwYM2jOiOFqB1Sk5Y0b4y1wBy7qHlw5/ueDUnQQ0fUXRJW+61QTjv7B7Yd8EzOErXeuWyD8xDwBikKYIHOcqzYi2Dh1y63XRsK8Ur8yECKp7LMzdT+EulsR8FCCsKOr1e84AOZf+k5C+DcbP7pjszU8eKc4RBxw2TdOKRygCx64k0Ayj9ll7Y0iThcARLiCmabAjxhTX7SC2n+uRgoHy3imwDsJVBNDh6awxceamGQSxL6JdxhkV7Pqu54ea6TtESKxy+1OicsqHVtbg26LFUsq/p2no4xpiwQJZ+TGJMXEt7tW1qbIJHs7D0M//9wunxuxjyzMpJGIbDaely/axsq9Q5+3nKK4uuB7NoXkDmibx4KmnT8IJoMP2ymncwmgbZDV4TwS6jrlBd+nvR6CLbNqMmdSXGhoWBJzv5cRRpfhlIhqmGenlW547siteZ24Alhs1l6qmS6h+W/RmjqmBctll6J7/hwwn/0We4rxp3LHMs6EjV25vIvx/o3lP8usDUR3zEbzY34xcjeMMIpGwifbID/8HY03HCSEfHkMDmP6dGGs/W5x8EGvCqUm6WRdtwgPkOPz+2RihpamvroGaNhTh4PsLc8UzuBIBOuu3EvVsokgQuIYJdLY8t8yA8=
