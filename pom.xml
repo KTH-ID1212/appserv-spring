@@ -76,10 +76,10 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.9.0</version>
                 <configuration>
-                    <!--<analysisCache>true</analysisCache> Can not be used after mvn:clean, since cach is removed.-->
+                    <!--<analysisCache>true</analysisCache> Can not be used after mvn:clean, since cache is removed.-->
                     <verbose>true</verbose>
-                    <failOnViolation>false</failOnViolation>
-                    <minimumTokens>10</minimumTokens>
+                    <failOnViolation>true</failOnViolation>
+                    <minimumTokens>50</minimumTokens>
                     <outputDirectory>${pmd.output.dir}</outputDirectory>
                     <targetDirectory>${pmd.target.dir}</targetDirectory>
                 </configuration>
@@ -99,9 +99,9 @@
                 <version>3.0.5</version>
                 <configuration>
                     <effort>Max</effort>
-                    <threshold>Low</threshold>
+                    <threshold>medium</threshold>
                     <xmlOutput>true</xmlOutput>
-                    <failOnError>false</failOnError>
+                    <failOnError>true</failOnError>
                     <findbugsXmlOutputDirectory>${findbugs.output.dir}</findbugsXmlOutputDirectory>
                     <plugins>
                         <plugin>
