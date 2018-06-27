@@ -3,22 +3,22 @@ language: java
 jdk:
 - oraclejdk8
 - oraclejdk10
-services:
-- docker
-before_deploy:
-- echo "DOCKER_PASSWORD"
-- echo "$DOCKER_PASSWORD"
-- echo "DOCKER_USERNAME"
-- echo "$DOCKER_USERNAME"
-- echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-deploy:
-  skip_cleanup: true
-  provider: script
-  script:
-  - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
-  - docker push sekthid1212/appserv-spring-dev:1.0
-  on:
-    branch: develop
+#services:
+#- docker
+#before_deploy:
+#- echo "DOCKER_PASSWORD"
+#- echo "$DOCKER_PASSWORD"
+#- echo "DOCKER_USERNAME"
+#- echo "$DOCKER_USERNAME"
+#- echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+#deploy:
+#  skip_cleanup: true
+#  provider: script
+#  script:
+#  - docker tag se.kth.id1212/appserv-spring:1.0 sekthid1212/appserv-spring-dev:1.0
+#  - docker push sekthid1212/appserv-spring-dev:1.0
+#  on:
+#    branch: develop
 after_script:
 - docker images
 - echo "Current directory is $(pwd)"
