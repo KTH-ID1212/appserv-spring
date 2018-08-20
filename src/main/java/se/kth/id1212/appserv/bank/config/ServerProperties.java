@@ -28,6 +28,7 @@ public class ServerProperties {
      * @param contextRoot The new context root of the web site.
      */
     public void setContextRoot(String contextRoot) {
+        LOGGER.trace("Setting context root {}.", contextRoot);
         this.contextRoot = contextRoot;
     }
 }
