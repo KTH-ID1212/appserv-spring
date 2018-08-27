@@ -49,7 +49,6 @@ public class BankConfig
      * resolver.
      */
     @Bean
-
     public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
@@ -61,7 +60,7 @@ public class BankConfig
      * thymeleaf template integration with Spring. All template resolution will
      * be delegated to the specified template resolver.
      */
-    @Bean
+    @Bean(name = "bankTemplateEngine")
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
