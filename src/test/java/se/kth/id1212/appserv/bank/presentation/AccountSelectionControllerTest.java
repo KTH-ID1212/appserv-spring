@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result
         //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
         // @EnableAutoConfiguration and @ComponentScan, but are we using
         // JUnit5 in that case?
-class ContextRootControllerTest {
+class AccountSelectionControllerTest {
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ class ContextRootControllerTest {
     void testCorrectViewForDeafultUrl() throws Exception {
         mockMvc.perform(get("/")) //no context root since we are not using any
                // server.
-               .andExpect(content().string(containsString("bank")))
-               .andExpect(content().string(containsString("up")));
+               .andExpect(content().string(containsString("Find Account")))
+               .andExpect(content().string(containsString("Create Account")));
     }
 }

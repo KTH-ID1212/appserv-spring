@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 // JUnit5 in that case?
 class ServerPropertiesTest {
     @Autowired
-    ServerProperties props;
+    private ServerProperties props;
 
     @Test
     void testContextRootIsReadFromAppConfig() {
