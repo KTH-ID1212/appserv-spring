@@ -9,13 +9,25 @@ import org.springframework.web.bind.annotation.GetMapping;
  * Handles all HTTP requests to context root.
  */
 @Controller
-public class AccountSelectionController {
+public class AccountController {
     private static final Logger LOGGER = LoggerFactory.getLogger(
-            AccountSelectionController.class);
+            AccountController.class);
 
     @GetMapping("/")
     public String defaultView() {
         LOGGER.trace("Call to context root.");
-        return "bank";
+        return "select-account";
+    }
+
+    @GetMapping("/select-account")
+    public String accountSelectionView() {
+        LOGGER.trace("Call to account selection view.");
+        return "select-account";
+    }
+
+    @GetMapping("/account")
+    public String accountView() {
+        LOGGER.trace("Call to account view.");
+        return "account";
     }
 }

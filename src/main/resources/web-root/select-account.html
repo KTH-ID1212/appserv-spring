@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{resources/css/reset.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{resources/css/bank.css}"/>
+    <title>The Bank</title>
+</head>
+<body>
+<header>
+    <figure>
+        <a th:href="@{/}"><img th:src="@{/logo.png}" alt="bank logo"/></a>
+    </figure>
+    <p>The Bank</p>
+</header>
+<main>
+    <nav>
+        <ul>
+            <li><a th:href="@{/select-account.html}">Select Account</a></li>
+        </ul>
+    </nav>
+
+    <section>
+        <h1>Create Account</h1>
+        <p class="info">Please enter account details</p>
+        <form>
+            <p class="form"><label for="create-acct-holder">Account Holder:</label><input type="text" name="create-acct-holder" id="create-acct-holder"/></p>
+            <p class="form"><label for="create-balance">Initial Balance:</label><input type="text" name="create-balance" id="create-balance"/></p>
+            <p class="form"><input type="submit" value="Create Account"/></p>
+        </form>
+    </section>
+    <section>
+        <h1>Search Account</h1>
+        <p class="info">Please enter the number of the account you are looking for</p>
+        <form>
+            <p class="form"><label for="search-acct-number">Account Number:</label><input type="text" name="search-acct-number" id="search-acct-number"/></p>
+            <p class="form"><input type="submit" value="Search"/></p>
+        </form>
+    </section>
+
+    <footer>
+        The Bank, Phone: 123456, Email: info@thebank.com
+    </footer>
+</main>
+</body>
+</html>
