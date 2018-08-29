@@ -14,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(initializers = ConfigFileApplicationContextInitializer.class)
 @EnableAutoConfiguration
@@ -35,6 +36,7 @@ class AccountControllerTest {
     void testCorrectViewForDeafultUrl() throws Exception {
         mockMvc.perform(get("/")) //no context root since we are not using any
                // server.
+               .andExpect(status().isOk())
                .andExpect(content().string(containsString("Search Account")))
                .andExpect(content().string(containsString("Create Account")));
     }
@@ -43,6 +45,7 @@ class AccountControllerTest {
     void testCorrectViewForSelectAcctUrl() throws Exception {
         mockMvc.perform(get("/select-account")) //no context root since we are
                // not using any server.
+               .andExpect(status().isOk())
                .andExpect(content().string(containsString("Search Account")))
                .andExpect(content().string(containsString("Create Account")));
     }
@@ -51,6 +54,7 @@ class AccountControllerTest {
     void testCorrectViewForAcctUrl() throws Exception {
         mockMvc.perform(get("/account")) //no context root since we are
                // not using any server.
+               .andExpect(status().isOk())
                .andExpect(content().string(containsString("Deposit")))
                .andExpect(content().string(containsString("Withdraw")));
     }

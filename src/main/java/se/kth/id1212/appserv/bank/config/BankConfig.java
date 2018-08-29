@@ -1,5 +1,6 @@
 package se.kth.id1212.appserv.bank.config;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +71,8 @@ public class BankConfig
         // across different data types, so this flag is "false" by default
         // for safer backwards compatibility.
         templateEngine.setEnableSpringELCompiler(true);
+        //Add the layout dialect, which enables reusing layout html pages.
+        templateEngine.addDialect(new LayoutDialect());
         return templateEngine;
     }
 

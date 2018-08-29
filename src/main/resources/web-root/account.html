@@ -1,50 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{resources/fragments/layout}">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{resources/css/reset.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{resources/css/bank.css}"/>
-    <title>The Bank</title>
+    <title>Title</title>
 </head>
 <body>
-<header>
-    <figure>
-        <a th:href="@{/}"><img th:src="@{/logo.png}" alt="bank logo"/></a>
-    </figure>
-    <p>The Bank</p>
-</header>
-<main>
-    <nav>
-        <ul>
-            <li><a th:href="@{/select-account.html}">Select Account</a></li>
-        </ul>
-    </nav>
+<main layout:fragment="content">
 
     <section>
         <h1>Account</h1>
         <p class="info">Current account details</p>
         <p class="form">Account number: 123, Balance: 123 SEK</p>
     </section>
+
     <section>
         <h1>Deposit</h1>
         <p class="info">Please enter amount to deposit</p>
         <form>
-            <p class="form"><label for="deposit-amt">Account Holder:</label><input type="text" name="deposit-amt" id="deposit-amt"/></p>
+            <p class="form"><label for="deposit-amt">Account Holder:</label><input type="text" name="deposit-amt"
+                                                                                   id="deposit-amt"/></p>
             <p class="form"><input type="submit" value="Deposit"/></p>
         </form>
     </section>
+
     <section>
         <h1>Withdraw</h1>
         <p class="info">Please enter amount to withdraw</p>
         <form>
-            <p class="form"><label for="withdraw-amt">Account Holder:</label><input type="text" name="withdraw-amt" id="withdraw-amt"/></p>
+            <p class="form"><label for="withdraw-amt">Account Holder:</label><input type="text" name="withdraw-amt"
+                                                                                    id="withdraw-amt"/></p>
             <p class="form"><input type="submit" value="Withdraw"/></p>
         </form>
     </section>
 
-    <footer>
-        The Bank, Phone: 123456, Email: info@thebank.com
-    </footer>
 </main>
 </body>
 </html>
