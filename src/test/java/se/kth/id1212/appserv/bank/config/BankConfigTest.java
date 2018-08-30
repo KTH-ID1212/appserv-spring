@@ -65,8 +65,8 @@ class BankConfigTest {
 
     @Test
     void testStaticResourceCanBeRead() throws Exception {
-        mockMvc.perform(get("/logo.png")) //no context root since we are not
-               // using any server.
+        mockMvc.perform(get("/resources/fragments/header-imgs/logo.png")) //no
+               // context root since we are not using any server.
                .andExpect(status().isOk()).andReturn().getResponse()
                .getContentType().equalsIgnoreCase("image/png");
     }
