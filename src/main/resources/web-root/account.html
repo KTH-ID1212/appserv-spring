@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{resources/fragments/layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{resources/fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,28 +8,28 @@
 <main layout:fragment="content">
 
     <section>
-        <h1>Account</h1>
-        <p class="info">Current account details</p>
-        <p class="form">Account number: 123, Balance: 123 SEK</p>
+        <h1 th:text="#{acct.details}">Account</h1>
+        <p class="info" th:text="#{acct.details.info}">Current account details</p>
+        <p class="form"><span th:text="#{acct.details.number}">Account number</span>: 123, <span th:text="#{acct.details.balance}">Balance</span>: 123 SEK</p>
     </section>
 
     <section>
-        <h1>Deposit</h1>
-        <p class="info">Please enter amount to deposit</p>
+        <h1 th:text="#{acct.deposit}">Deposit</h1>
+        <p class="info" th:text="#{acct.deposit.info}">Please enter amount to deposit</p>
         <form>
-            <p class="form"><label for="deposit-amt">Account Holder:</label><input type="text" name="deposit-amt"
+            <p class="form"><label for="deposit-amt" th:text="#{acct.deposit.amt}">Amount</label>:<input type="text" name="deposit-amt"
                                                                                    id="deposit-amt"/></p>
-            <p class="form"><input type="submit" value="Deposit"/></p>
+            <p class="form"><input type="submit" th:value="#{acct.deposit.submit}"/></p>
         </form>
     </section>
 
     <section>
-        <h1>Withdraw</h1>
-        <p class="info">Please enter amount to withdraw</p>
+        <h1 th:text="#{acct.withdraw}">Withdraw</h1>
+        <p class="info" th:text="#{acct.withdraw.info}">Please enter amount to withdraw</p>
         <form>
-            <p class="form"><label for="withdraw-amt">Account Holder:</label><input type="text" name="withdraw-amt"
+            <p class="form"><label for="withdraw-amt" th:text="#{acct.withdraw.amt}">Amount</label>:<input type="text" name="withdraw-amt"
                                                                                     id="withdraw-amt"/></p>
-            <p class="form"><input type="submit" value="Withdraw"/></p>
+            <p class="form"><input type="submit" th:value="#{acct.withdraw.submit}"/></p>
         </form>
     </section>
 

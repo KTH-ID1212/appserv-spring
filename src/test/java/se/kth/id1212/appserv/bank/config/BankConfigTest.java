@@ -7,14 +7,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +46,10 @@ class BankConfigTest {
     private SpringResourceTemplateResolver templateResolver;
     @Autowired
     private WebApplicationContext webappContext;
+    @Autowired
+    private LocaleChangeInterceptor i18nBean;
+    @Autowired
+    private ReloadableResourceBundleMessageSource messageSource;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -60,16 +72,31 @@ class BankConfigTest {
     }
 
     @Test
-    void correctTemplEngineIsUsed() {
+    void testCorrectTemplEngineIsUsed() {
         assertEquals(templateEngine, viewResolver.getTemplateEngine(),
                      "Wrong template engine.");
     }
 
     @Test
-    void correctTemplResolverIsUsed() {
+    void testCorrectTemplResolverIsUsed() {
         assertTrue(((SpringTemplateEngine)viewResolver.getTemplateEngine())
                            .getTemplateResolvers().contains(templateResolver),
                    "Wrong template resolver.");
     }
 
+    @Test
+    void testCorrectI18nBeanCreated() {
+        assertThat("Wrong properties in i18n bean.", i18nBean, allOf(
+                hasProperty("paramName", equalTo("lang")),
+                hasProperty("httpMethods", arrayContainingInAnyOrder(
+                        "GET", "POST")),
+                hasProperty("ignoreInvalidLocale", equalTo(true))));
+    }
+
+    @Test
+    void testCorrectMsgSourceBeanCreated() {
+        assertThat("Wrong properties in message source bean.", messageSource,
+                   hasProperty("basenameSet",
+                               containsInAnyOrder("classpath:/i18n/messages")));
+    }
 }

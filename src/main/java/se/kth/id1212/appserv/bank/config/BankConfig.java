@@ -5,14 +5,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+
+import java.util.Locale;
 
 /**
  * Loads all configuration for the entire bank web app. Note that there are
@@ -20,8 +27,7 @@ import org.thymeleaf.templatemode.TemplateMode;
  */
 @EnableWebMvc
 @Configuration
-public class BankConfig
-        implements WebMvcConfigurer, ApplicationContextAware {
+public class BankConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -110,5 +116,52 @@ public class BankConfig
                 .addResourceLocations(rootDirForStaticFiles)
                 .setCachePeriod(cachePeriodForStaticFilesInSecs)
                 .resourceChain(true).addResolver(new PathResourceResolver());
+    }
+
+    /**
+     * Register the i18n interceptor.
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    /**
+     * Create a <code>org.springframework.web.servlet.i18n
+     * .LocaleChangeInterceptor</code> for locale management.
+     */
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        String nameOfHttpParamForLangCode = "lang";
+        String[] allowedHttpMethodsForLocaleChange = {"GET", "POST"};
+
+        LocaleChangeInterceptor i18nBean = new LocaleChangeInterceptor();
+        i18nBean.setParamName(nameOfHttpParamForLangCode);
+        i18nBean.setHttpMethods(allowedHttpMethodsForLocaleChange);
+        i18nBean.setIgnoreInvalidLocale(true);
+        return i18nBean;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver()
+    {
+        final SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        localeResolver.setDefaultLocale(new Locale("en"));
+        return localeResolver;
+    }
+
+    /**
+     * Create a <code>org.springframework.context.support.ReloadableResourceBundleMessageSource</code>
+     * that loads resource bundles for i18n.
+     */
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        String l10nResourceBundleDir = "classpath:/i18n/messages";
+        ReloadableResourceBundleMessageSource resource =
+                new ReloadableResourceBundleMessageSource();
+        resource.setBasename(l10nResourceBundleDir);
+        resource.setDefaultEncoding("UTF-8");
+        resource.setFallbackToSystemLocale(false);
+        return resource;
     }
 }

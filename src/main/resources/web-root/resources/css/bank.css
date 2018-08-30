@@ -15,20 +15,40 @@ header {
     letter-spacing: .1em;
 }
 
-header figure {
+header figure#logo {
     height: 90%;
     width: 90px;
     margin: 0
 }
 
-header>figure img {
-    height: 100%;
+header figure#logo img {
+    width: 100%;
 }
 
 header p {
     position: absolute;
     top: 14px;
     left: 100px;
+}
+
+header figure#lang {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin:0;
+    width: 100px;
+}
+
+header figure#lang img {
+    width: 100%;
+    position: relative;
+    top: -40%;
+}
+
+header figure#lang a {
+    float: left;
+    width: 40%;
+    margin: 3%;
 }
 
 /* end of header rules */

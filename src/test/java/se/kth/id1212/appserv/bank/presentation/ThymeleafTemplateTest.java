@@ -89,6 +89,7 @@ class ThymeleafTemplateTest {
                                                  containsElement("main"),
                                                  containsElement("footer"))));
     }
+
     @Test
     void testAccountPageHasAllFragments() throws Exception {
         mockMvc.perform(get("/account")) //no context root since we are
@@ -99,5 +100,20 @@ class ThymeleafTemplateTest {
                                                  containsElement("nav"),
                                                  containsElement("main"),
                                                  containsElement("footer"))));
+    }
+
+    @Test
+    void testCorrectLanguageIsUsed() throws Exception {
+        mockMvc.perform(get("/account")) //no context root since we are
+               // not using any server.
+               .andExpect(status().isOk())
+               .andExpect(content().string(containsElement("footer>span" +
+                                                           ":contains(Phone)")));
+        mockMvc.perform(get("/account?lang=sv")) //no context root since we are
+               // not using any server.
+               .andExpect(status().isOk())
+               .andExpect(content().string(containsElement("footer>span" +
+                                                           ":contains" +
+                                                           "(Telefon)")));
     }
 }

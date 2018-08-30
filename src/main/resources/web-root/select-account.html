@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{resources/fragments/layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{resources/fragments/layout}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,26 +9,31 @@
 <main layout:fragment="content">
 
     <section>
-        <h1>Create Account</h1>
-        <p class="info">Please enter account details</p>
+        <h1 th:text="#{select-acct.create-acct}">Create Account</h1>
+        <p class="info" th:text="#{select-acct.create-acct.info}">Please enter account details</p>
         <form>
-            <p class="form"><label for="create-acct-holder">Account Holder:</label><input type="text"
-                                                                                          name="create-acct-holder"
-                                                                                          id="create-acct-holder"/></p>
-            <p class="form"><label for="create-balance">Initial Balance:</label><input type="text" name="create-balance"
-                                                                                       id="create-balance"/></p>
-            <p class="form"><input type="submit" value="Create Account"/></p>
+            <p class="form"><label for="create-acct-holder" th:text="#{select-acct.create-acct.holder}">Account
+                Holder</label>:<input type="text"
+                                      name="create-acct-holder"
+                                      id="create-acct-holder"/></p>
+            <p class="form"><label for="create-balance" th:text="#{select-acct.create-acct.balance}">Initial
+                Balance</label>:<input type="text" name="create-balance"
+                                       id="create-balance"/></p>
+            <p class="form"><input type="submit" th:value="#{select-acct.create-acct.submit}"/>
+            </p>
         </form>
     </section>
 
     <section>
-        <h1>Search Account</h1>
-        <p class="info">Please enter the number of the account you are looking for</p>
+        <h1 th:text="#{select-acct.search-acct}">Search Account</h1>
+        <p class="info" th:text="#{select-acct.search-acct.info}">Please enter the number of the account you are looking
+            for</p>
         <form>
-            <p class="form"><label for="search-acct-number">Account Number:</label><input type="text"
-                                                                                          name="search-acct-number"
-                                                                                          id="search-acct-number"/></p>
-            <p class="form"><input type="submit" value="Search"/></p>
+            <p class="form"><label for="search-acct-number" th:text="#{select-acct.search-acct.number}">Account
+                Number</label>:<input type="text"
+                                      name="search-acct-number"
+                                      id="search-acct-number"/></p>
+            <p class="form"><input type="submit" th:value="#{select-acct.search-acct.submit}"/></p>
         </form>
     </section>
 
