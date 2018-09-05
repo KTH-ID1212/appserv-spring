@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{resources/fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <section>
+        <h1 th:text="#{acct.details}">Account</h1>
+        <p class="info" th:text="#{acct.details.info}">Current account details</p>
+        <p class="form"><span th:text="#{acct.details.number}">Account number</span>: 123, <span
+                th:text="#{acct.details.number}">Balance</span>: 123 SEK</p>
+    </section>
+
+    <section>
+        <h1 th:text="#{acct.deposit}">Deposit</h1>
+        <p class="info" th:text="#{acct.deposit.info}">Please enter amount to deposit</p>
+        <form th:action="@{/deposit}" th:object="${depositForm}" method="post">
+            <p class="form"><label for="deposit-amt" th:text="#{acct.deposit.amt}">Amount</label>:<input type="text"
+                                                                                                         th:field="*{amount}"
+                                                                                                         id="deposit-amt"/>
+                <span class="error" th:if="${#fields.hasErrors('amount')}"
+                      th:errors="*{amount}">Amount Error</span></p>
+            <p class="submit"><input type="submit" th:value="#{acct.deposit.submit}"/></p>
+        </form>
+    </section>
+
+    <section>
+        <h1 th:text="#{acct.withdraw}">Withdraw</h1>
+        <p class="info" th:text="#{acct.withdraw.info}">Please enter amount to withdraw</p>
+        <form th:action="@{/withdraw}" th:object="${withdrawForm}" method="post">
+            <p class="form"><label for="withdraw-amt" th:text="#{acct.withdraw.amt}">Amount</label>:<input type="text"
+                                                                                                           th:field="*{amount}"
+                                                                                                           id="withdraw-amt"/>
+                <span class="error"
+                      th:if="${#fields.hasErrors('amount')}"
+                      th:errors="*{amount}">Amount Error</span></p>
+            <p class="submit"><input type="submit" th:value="#{acct.withdraw.submit}"/></p>
+        </form>
+    </section>
+
+</main>
+</body>
+</html>

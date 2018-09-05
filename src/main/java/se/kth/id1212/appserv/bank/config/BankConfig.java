@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -58,6 +60,8 @@ public class BankConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean
     public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setContentType("text/html; charset=UTF-8");
         viewResolver.setTemplateEngine(templateEngine());
         return viewResolver;
     }
@@ -142,26 +146,43 @@ public class BankConfig implements WebMvcConfigurer, ApplicationContextAware {
         return i18nBean;
     }
 
+    /**
+     * Create a <code>org.springframework.web.servlet.i18n
+     * .SessionLocaleResolver</code> that stores the user's current locale in
+     * the session object.
+     */
     @Bean
     public LocaleResolver localeResolver()
     {
-        final SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
         localeResolver.setDefaultLocale(new Locale("en"));
         return localeResolver;
     }
 
     /**
-     * Create a <code>org.springframework.context.support.ReloadableResourceBundleMessageSource</code>
-     * that loads resource bundles for i18n.
+     * Create a <code>org.springframework.context.support.
+     * ReloadableResourceBundleMessageSource</code> that loads resource
+     * bundles for i18n.
      */
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
-        String l10nResourceBundleDir = "classpath:/i18n/messages";
+        String l10nMsgDir = "classpath:/i18n/Messages";
+        String l10nValidationMsgDir = "classpath:/i18n/ValidationMessages";
         ReloadableResourceBundleMessageSource resource =
                 new ReloadableResourceBundleMessageSource();
-        resource.setBasename(l10nResourceBundleDir);
+        resource.addBasenames(l10nMsgDir, l10nValidationMsgDir);
         resource.setDefaultEncoding("UTF-8");
         resource.setFallbackToSystemLocale(false);
         return resource;
+    }
+
+    /**
+     * Use the bean defined by {@link #messageSource()} for validation messages.
+     */
+    @Override
+    public Validator getValidator() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource());
+        return validator;
     }
 }

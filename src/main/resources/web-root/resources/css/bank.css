@@ -122,14 +122,25 @@ section p {
     font-size: 1em;
 }
 
-p.info {
+section p.info {
     margin: 0 0 .5em 1em;
     font-size: 1.1em;
     text-decoration: underline;
 }
 
-p.form {
-    margin-left: 10%;
+section p.form {
+    float: left;   
+    margin-left: 5%;
+    margin-bottom: 5px;
+}
+
+section span.error {
+    color: red;
+}
+
+section p.submit {
+    clear: left;
+    margin-left: 5%;
 }
 
 /* end of main content rules */

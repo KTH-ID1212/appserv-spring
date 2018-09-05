@@ -36,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         // JUnit5 in that case?
 class BankConfigTest {
     @Autowired
-    private BankConfig conf;
-    @Autowired
     private ThymeleafViewResolver viewResolver;
     @Autowired
     @Qualifier("bankTemplateEngine")
@@ -58,7 +56,7 @@ class BankConfigTest {
     }
 
     @Test
-    void testCorrectServerPropsCreated() {
+    void testCorrectServerPropsCreated(@Autowired BankConfig conf) {
         assertEquals("/bank", conf.serverProperties().getContextRoot(),
                      "Wrong ServerProperties instance.");
     }
@@ -96,7 +94,8 @@ class BankConfigTest {
     @Test
     void testCorrectMsgSourceBeanCreated() {
         assertThat("Wrong properties in message source bean.", messageSource,
-                   hasProperty("basenameSet",
-                               containsInAnyOrder("classpath:/i18n/messages")));
+            hasProperty("basenameSet",
+                containsInAnyOrder("classpath:/i18n/Messages",
+                                   "classpath:/i18n/ValidationMessages")));
     }
 }

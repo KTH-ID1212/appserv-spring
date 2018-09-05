@@ -8,21 +8,21 @@ import org.springframework.boot.test.context.ConfigFileApplicationContextInitial
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static se.kth.id1212.appserv.bank.presentation.HtmlMatcher.containsElement;
-import static org.hamcrest.Matchers.allOf;
+import static se.kth.id1212.appserv.bank.presentation.Util.containsElements;
+
 
 @SpringJUnitWebConfig(initializers = ConfigFileApplicationContextInitializer.class)
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"se.kth.id1212.appserv.bank"})
-        //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
-        // @EnableAutoConfiguration and @ComponentScan, but are we using
-        // JUnit5 in that case?
+    //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
+    // @EnableAutoConfiguration and @ComponentScan, but are we using
+    // JUnit5 in that case?
 class ThymeleafTemplateTest {
     @Autowired
     private WebApplicationContext webappContext;
@@ -35,85 +35,67 @@ class ThymeleafTemplateTest {
 
     @Test
     void testHeadingIsIncluded() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement(
-                       "head link[href$=bank.css]")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("head link[href$=bank.css]"));
     }
 
     @Test
     void testHeaderIsIncluded() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement(
-                       "header img[src$=/logo.png]")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("header img[src$=/logo.png]"));
     }
 
     @Test
     void testNavigationIsIncluded() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement(
-                       "nav>ul>li>a")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("nav>ul>li>a"));
     }
 
     @Test
     void testFooterIsIncluded() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement(
-                       "footer")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("footer"));
     }
 
     @Test
     void testContentIsIncluded() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement(
-                       "main>section>h1:contains(Account)")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("main>section>h1:contains(Account)"));
     }
 
     @Test
     void testSelectAccountPageHasAllFragments() throws Exception {
-        mockMvc.perform(get("/select-account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(allOf(containsElement("head"),
-                                                 containsElement("header"),
-                                                 containsElement("nav"),
-                                                 containsElement("main"),
-                                                 containsElement("footer"))));
+        sendGetRequest(AcctController.SELECT_ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("head", "header", "nav", "main",
+                                        "footer"));
     }
 
     @Test
     void testAccountPageHasAllFragments() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(allOf(containsElement("head"),
-                                                 containsElement("header"),
-                                                 containsElement("nav"),
-                                                 containsElement("main"),
-                                                 containsElement("footer"))));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("head", "header", "nav", "main",
+                                        "footer"));
     }
 
     @Test
     void testCorrectLanguageIsUsed() throws Exception {
-        mockMvc.perform(get("/account")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement("footer>span" +
-                                                           ":contains(Phone)")));
-        mockMvc.perform(get("/account?lang=sv")) //no context root since we are
-               // not using any server.
-               .andExpect(status().isOk())
-               .andExpect(content().string(containsElement("footer>span" +
-                                                           ":contains" +
-                                                           "(Telefon)")));
+        sendGetRequest(AcctController.ACCT_PAGE_URL)
+            .andExpect(status().isOk())
+            .andExpect(containsElements("footer>span:contains(Phone)"));
+        sendGetRequest(AcctController.ACCT_PAGE_URL + "?lang=sv")
+            .andExpect(status().isOk())
+            .andExpect(containsElements("footer>span:contains(Telefon)"));
+    }
+
+    private ResultActions sendGetRequest(String Url) throws Exception {
+        return mockMvc.perform(get("/" + Url)); //no context path in Url
+        // since we are not using any server.
     }
 }
