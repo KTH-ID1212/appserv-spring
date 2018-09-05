@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{resources/fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <section>
+        <h1 th:text="#{select-acct.create-acct}">Create Account</h1>
+        <p class="info" th:text="#{select-acct.create-acct.info}">Please enter account details</p>
+        <form th:action="@{/create-acct}" th:object="${createAcctForm}" method="post">
+            <p class="form"><label for="create-acct-holder" th:text="#{select-acct.create-acct.holder}">Account
+                Holder</label>:<input type="text"
+                                      th:field="*{holder}"
+                                      id="create-acct-holder"/>
+                <span class="error" th:if="${#fields.hasErrors('holder')}" th:errors="*{holder}">Name Error
+            </span></p>
+            <p class="form"><label for="create-balance" th:text="#{select-acct.create-acct.number}">Initial
+                Balance</label>:<input type="text" th:field="*{balance}"
+                                       id="create-balance"/>
+                <span class="error" th:if="${#fields.hasErrors('balance')}"
+                      th:errors="*{balance}">Balance Error</span></p>
+            <p class="submit"><input type="submit" th:value="#{select-acct.create-acct.submit}"/>
+            </p>
+        </form>
+    </section>
+
+    <section>
+        <h1 th:text="#{select-acct.search-acct}">Search Account</h1>
+        <p class="info" th:text="#{select-acct.search-acct.info}">Please enter the number of the account you are looking
+            for</p>
+        <form th:action="@{/find-acct}" th:object="${findAcctForm}" method="post">
+            <p class="form"><label for="search-acct-number" th:text="#{select-acct.search-acct.number}">Account
+                Number</label>:<input type="text"
+                                      th:field="*{number}"
+                                      id="search-acct-number"/>
+                <span class="error"
+                      th:if="${#fields.hasErrors('number')}"
+                      th:errors="*{number}">Number Error</span></p>
+            <p class="submit"><input type="submit" th:value="#{select-acct.search-acct.submit}"/></p>
+        </form>
+    </section>
+
+</main>
+</body>
+</html>

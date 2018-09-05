@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MainTest {
     @Autowired
     @Qualifier("getWebServerFactoryCustomizer")
-    WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
+    private WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
             factoryCustomizer;
 
     @Test

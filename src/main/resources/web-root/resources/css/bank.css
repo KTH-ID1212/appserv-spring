@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin:  5%;
+    background-color: #D1C2B6;
+    color: #5D5C61;
+}
+
+/* header rules */
+
+header {
+    position: relative;
+    height: 100px;
+    font-size: 4em;
+    color: #938E94;
+    letter-spacing: .1em;
+}
+
+header figure#logo {
+    height: 90%;
+    width: 90px;
+    margin: 0
+}
+
+header figure#logo img {
+    width: 100%;
+}
+
+header p {
+    position: absolute;
+    top: 14px;
+    left: 100px;
+}
+
+header figure#lang {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin:0;
+    width: 100px;
+}
+
+header figure#lang img {
+    width: 100%;
+    position: relative;
+    top: -40%;
+}
+
+header figure#lang a {
+    float: left;
+    width: 40%;
+    margin: 3%;
+}
+
+/* end of header rules */
+
+/* navbar rules */
+
+nav {
+    width: 100%;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: #7395AE;
+    text-align: left;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+nav li {
+    display:inline-block
+}
+
+nav li * {
+    padding:  0.5em;
+    display: inline-block;
+    color: #5D5C61;
+    text-align: center;
+    text-decoration: none;
+}
+
+nav li:hover {
+    background-color: #557A95;
+}
+
+nav a:active {
+    background-color: #B1A296;
+}
+
+/* end of navbar rules */
+
+/* footer rules */
+
+footer {
+    border-top-style: solid;
+    border-top-width: 1px;
+    padding-top: 10px;
+    position: relative;
+    width: 80%;
+    margin: auto;
+    top: 20px;
+    font-size: 0.8em;
+    font-style: italic;
+    text-align: center;
+}
+
+/* end of footer rules */
+
+/* main content rules */
+
+section>h1 {
+    text-align:center;
+    font-weight: bold;
+    font-size: 2em;
+    margin-top: 1.5em;
+    margin-bottom: .8em;
+}
+
+section p {
+    font-size: 1em;
+}
+
+section p.info {
+    margin: 0 0 .5em 1em;
+    font-size: 1.1em;
+    text-decoration: underline;
+}
+
+section p.form {
+    float: left;   
+    margin-left: 5%;
+    margin-bottom: 5px;
+}
+
+section span.error {
+    color: red;
+}
+
+section p.submit {
+    clear: left;
+    margin-left: 5%;
+}
+
+/* end of main content rules */

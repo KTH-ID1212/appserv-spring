@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header th:fragment="header">
+    <figure id="logo">
+        <a th:href="@{/}"><img th:src="@{/resources/fragments/header-imgs/logo.png}" alt="bank logo"/></a>
+    </figure>
+    <p>The Bank</p>
+    <figure id="lang">
+        <a th:href="@{''(lang=en)}"><img th:src="@{/resources/fragments/header-imgs/en.png}"/></a>
+        <a th:href="@{''(lang=sv)}"><img th:src="@{/resources/fragments/header-imgs/sv.png}"/></a>
+    </figure>
+</header>
+</body>
+</html>
