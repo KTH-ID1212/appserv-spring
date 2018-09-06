@@ -31,23 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig(initializers = ConfigFileApplicationContextInitializer.class)
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"se.kth.id1212.appserv.bank"})
-        //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
-        // @EnableAutoConfiguration and @ComponentScan, but are we using
-        // JUnit5 in that case?
+    //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
+    // @EnableAutoConfiguration and @ComponentScan, but are we using
+    // JUnit5 in that case?
 class BankConfigTest {
     @Autowired
-    private ThymeleafViewResolver viewResolver;
-    @Autowired
-    @Qualifier("bankTemplateEngine")
-    private SpringTemplateEngine templateEngine;
-    @Autowired
-    private SpringResourceTemplateResolver templateResolver;
-    @Autowired
     private WebApplicationContext webappContext;
-    @Autowired
-    private LocaleChangeInterceptor i18nBean;
-    @Autowired
-    private ReloadableResourceBundleMessageSource messageSource;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -70,32 +59,38 @@ class BankConfigTest {
     }
 
     @Test
-    void testCorrectTemplEngineIsUsed() {
+    void testCorrectTemplEngineIsUsed(
+        @Autowired @Qualifier("bankTemplateEngine") SpringTemplateEngine templateEngine,
+        @Autowired ThymeleafViewResolver viewResolver) {
         assertEquals(templateEngine, viewResolver.getTemplateEngine(),
                      "Wrong template engine.");
     }
 
     @Test
-    void testCorrectTemplResolverIsUsed() {
+    void testCorrectTemplResolverIsUsed(
+        @Autowired ThymeleafViewResolver viewResolver,
+        @Autowired SpringResourceTemplateResolver templateResolver) {
         assertTrue(((SpringTemplateEngine)viewResolver.getTemplateEngine())
-                           .getTemplateResolvers().contains(templateResolver),
+                       .getTemplateResolvers().contains(templateResolver),
                    "Wrong template resolver.");
     }
 
     @Test
-    void testCorrectI18nBeanCreated() {
-        assertThat("Wrong properties in i18n bean.", i18nBean, allOf(
-                hasProperty("paramName", equalTo("lang")),
-                hasProperty("httpMethods", arrayContainingInAnyOrder(
-                        "GET", "POST")),
-                hasProperty("ignoreInvalidLocale", equalTo(true))));
+    void testCorrectI18nBeanCreated(
+        @Autowired LocaleChangeInterceptor i18nBean) {
+        assertThat("Wrong properties in i18n bean.", i18nBean,
+                   allOf(hasProperty("paramName", equalTo("lang")),
+                         hasProperty("httpMethods",
+                                     arrayContainingInAnyOrder("GET", "POST")),
+                         hasProperty("ignoreInvalidLocale", equalTo(true))));
     }
 
     @Test
-    void testCorrectMsgSourceBeanCreated() {
+    void testCorrectMsgSourceBeanCreated(
+        @Autowired ReloadableResourceBundleMessageSource messageSource) {
         assertThat("Wrong properties in message source bean.", messageSource,
-            hasProperty("basenameSet",
-                containsInAnyOrder("classpath:/i18n/Messages",
-                                   "classpath:/i18n/ValidationMessages")));
+                   hasProperty("basenameSet", containsInAnyOrder(
+                       "classpath:/i18n/Messages",
+                       "classpath:/i18n/ValidationMessages")));
     }
 }
