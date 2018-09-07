@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server
-        .ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import se.kth.id1212.appserv.bank.config.ServerProperties;
 
@@ -40,8 +39,7 @@ public class Main {
     }
 
     @Bean
-    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
-    getWebServerFactoryCustomizer() {
+    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> getWebServerFactoryCustomizer() {
         LOGGER.trace("Setting WebServerFactory.");
         return serverFactory -> {
             LOGGER.trace("Setting context root.");

@@ -23,7 +23,7 @@ public class Util {
      *                     shall exist.
      * @return The desired matcher.
      */
-    static ResultMatcher containsElements(String... cssSelectors) {
+    public static ResultMatcher containsElements(String... cssSelectors) {
         List<Matcher<? super String>> matchers = new ArrayList<>();
         for (String selector : cssSelectors) {
             matchers.add(HtmlMatchers.containsElement(selector));
@@ -39,7 +39,7 @@ public class Util {
      *                     shall exist.
      * @return The desired matcher.
      */
-    static ResultMatcher doesNotContainElements(String... cssSelectors) {
+    public static ResultMatcher doesNotContainElements(String... cssSelectors) {
         List<Matcher<? super String>> matchers = new ArrayList<>();
         for (String selector : cssSelectors) {
             matchers.add(HtmlMatchers.doesNotContainElement(selector));

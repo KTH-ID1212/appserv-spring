@@ -1,4 +1,4 @@
-package se.kth.id1212.appserv.bank.presentation;
+package se.kth.id1212.appserv.bank.presentation.acct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
