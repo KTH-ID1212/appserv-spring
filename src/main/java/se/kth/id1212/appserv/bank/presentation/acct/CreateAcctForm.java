@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
  */
 class CreateAcctForm {
     @NotBlank(message = "{create-acct.holder.missing}")
+    // The regex below should permit only characters, but asterisk is
+    // unfortunately also valid.
     @Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "{create-acct.holder" +
                                                       ".invalid-char}")
     @Size(min = 2, max = 30, message = "{create-acct.holder.length}")

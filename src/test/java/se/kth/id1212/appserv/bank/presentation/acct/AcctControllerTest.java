@@ -55,7 +55,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateCorrectParams() throws Exception {
+    void testCreateCorrectParams() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "1"), "holder", "ab"))
             .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctTooShortHolder() throws Exception {
+    void testCreateAcctTooShortHolder() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "1"), "holder", "1"))
             .andExpect(status().isOk())
@@ -84,7 +84,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctMissingHolder() throws Exception {
+    void testCreateAcctMissingHolder() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "1"), "holder", ""))
             .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctWrongCharInHolder() throws Exception {
+    void testCreateAcctWrongCharInHolder() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "1"), "holder", "123"))
             .andExpect(status().isOk())
@@ -104,7 +104,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctTooLongHolder() throws Exception {
+    void testCreateAcctTooLongHolder() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
                 "balance", "1"), "holder", "1234567890123456789012345678901"))
                .andExpect(status().isOk())
@@ -113,7 +113,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctMissingBalance() throws Exception {
+    void testCreateAcctMissingBalance() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam("name", "12"))
             .andExpect(status().isOk())
             .andExpect(isSelectAcctPage())
@@ -121,7 +121,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctWrongCharInBalance() throws Exception {
+    void testCreateAcctWrongCharInBalance() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "a"), "holder", "abc"))
             .andExpect(status().isOk())
@@ -130,7 +130,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForCreateAcctNegativeBalance() throws Exception {
+    void testCreateAcctNegativeBalance() throws Exception {
         sendPostRequest(AcctController.CREATE_ACCT_URL,addParam(addParam(
             "balance", "-1"), "name", "12"))
             .andExpect(status().isOk())
@@ -139,7 +139,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForFindCorrectParams() throws Exception {
+    void testFindCorrectParams() throws Exception {
         sendPostRequest(AcctController.FIND_ACCT_URL,addParam(
             "number", "1"))
             .andExpect(status().isOk())
@@ -158,7 +158,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForFindAcctMissingAcctNo() throws Exception {
+    void testFindAcctMissingAcctNo() throws Exception {
         sendPostRequest(AcctController.FIND_ACCT_URL)
             .andExpect(status().isOk())
             .andExpect(isSelectAcctPage())
@@ -168,7 +168,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForFindAcctWrongCharInAcctNo() throws Exception {
+    void testFindAcctWrongCharInAcctNo() throws Exception {
         sendPostRequest(AcctController.FIND_ACCT_URL,addParam("number", "a"))
             .andExpect(status().isOk())
             .andExpect(isSelectAcctPage())
@@ -176,7 +176,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForFindAcctNegativeNumber() throws Exception {
+    void testFindAcctNegativeNumber() throws Exception {
         sendPostRequest(AcctController.FIND_ACCT_URL,addParam("number", "-1"))
             .andExpect(status().isOk())
             .andExpect(isSelectAcctPage())
@@ -185,7 +185,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForDepositCorrectParams() throws Exception {
+    void testDepositCorrectParams() throws Exception {
         sendPostRequest(AcctController.DEPOSIT_URL,addParam("amount", "1"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -203,7 +203,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForDepositMissingAmt() throws Exception {
+    void testDepositMissingAmt() throws Exception {
         sendPostRequest(AcctController.DEPOSIT_URL)
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -211,7 +211,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForDepositWrongCharInAmt() throws Exception {
+    void testDepositWrongCharInAmt() throws Exception {
         sendPostRequest(AcctController.DEPOSIT_URL,addParam("amount", "a"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -219,7 +219,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForDepositNegativeNumber() throws Exception {
+    void testDepositNegativeNumber() throws Exception {
         sendPostRequest(AcctController.DEPOSIT_URL,addParam("amount", "-1"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -227,7 +227,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForWithdrawCorrectParams() throws Exception {
+    void testWithdrawCorrectParams() throws Exception {
         sendPostRequest(AcctController.WITHDRAW_URL,addParam("amount", "1"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -245,7 +245,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForWithdrawMissingAmt() throws Exception {
+    void testWithdrawMissingAmt() throws Exception {
         sendPostRequest(AcctController.WITHDRAW_URL)
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -253,7 +253,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForWithdrawWrongCharInAmt() throws Exception {
+    void testWithdrawWrongCharInAmt() throws Exception {
         sendPostRequest(AcctController.WITHDRAW_URL,addParam("amount", "a"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
@@ -261,7 +261,7 @@ class AcctControllerTest {
     }
 
     @Test
-    void testCorrectViewForWithdrawNegativeNumber() throws Exception {
+    void testWithdrawNegativeNumber() throws Exception {
         sendPostRequest(AcctController.WITHDRAW_URL,addParam("amount", "-1"))
             .andExpect(status().isOk())
             .andExpect(isAcctPage())
