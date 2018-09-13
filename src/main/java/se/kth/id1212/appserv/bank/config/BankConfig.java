@@ -30,7 +30,6 @@ import java.util.Locale;
 @EnableWebMvc
 @Configuration
 public class BankConfig implements WebMvcConfigurer, ApplicationContextAware {
-
     private ApplicationContext applicationContext;
 
     /**

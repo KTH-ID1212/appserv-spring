@@ -1,0 +1,11 @@
+package se.kth.id1212.appserv.bank.domain;
+
+import javax.persistence.Entity;
+
+/**
+ * A bank account
+ */
+@Entity
+public class Account {
+
+}

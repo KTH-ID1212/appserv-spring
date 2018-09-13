@@ -26,6 +26,12 @@
         <!--<appender-ref ref="STDOUT"/>-->
     </logger>
 
+    <!-- Do not log handled exception to the console. -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="warn" additivity="false">
+        <appender-ref ref="FILE"/>
+        <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
     <root level="warn">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
