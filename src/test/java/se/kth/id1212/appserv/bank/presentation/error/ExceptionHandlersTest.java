@@ -1,5 +1,6 @@
 package se.kth.id1212.appserv.bank.presentation.error;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +11,16 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
 
 import javax.servlet.RequestDispatcher;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import java.io.IOException;
+import java.sql.SQLException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static se.kth.id1212.appserv.bank.presentation.Util.containsElements;
 
@@ -33,6 +34,12 @@ class ExceptionHandlersTest {
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
+
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
+    }
 
     @BeforeEach
     void setup() throws Exception {

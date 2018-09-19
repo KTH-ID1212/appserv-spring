@@ -1,5 +1,6 @@
 package se.kth.id1212.appserv.bank;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,10 @@ import org.springframework.boot.web.servlet.server
         .ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,6 +33,12 @@ class MainTest {
     @Qualifier("getWebServerFactoryCustomizer")
     private WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>
             factoryCustomizer;
+
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
+    }
 
     @Test
     void testWebServerFactoryCustomizerCreation() {

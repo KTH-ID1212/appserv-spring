@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
  * A functional library of utility methods.
  */
 public class Util {
+    private Util() {}
+
     /**
      * Creates a string representation of the specified object. The string
      * contains the class name and the names and values of all fields declared

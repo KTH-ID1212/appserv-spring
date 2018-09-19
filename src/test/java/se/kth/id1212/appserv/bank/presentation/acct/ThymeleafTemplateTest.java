@@ -1,5 +1,6 @@
 package se.kth.id1212.appserv.bank.presentation.acct;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import se.kth.id1212.appserv.bank.presentation.acct.AcctController;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +33,12 @@ class ThymeleafTemplateTest {
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
+
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
+    }
 
     @BeforeEach
     void setup() throws Exception {

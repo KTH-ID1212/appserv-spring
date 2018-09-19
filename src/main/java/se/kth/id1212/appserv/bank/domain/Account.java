@@ -13,10 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "ACCOUNT")
-public class Account {
+public class Account implements AccountDTO {
     private static final String SEQUENCE_NAME_KEY = "SEQ_NAME";
 
     @Id
@@ -25,6 +27,7 @@ public class Account {
     @Column(name = "ACCT_ID")
     private long id;
 
+    @PositiveOrZero(message = "{acct.balance.negative}")
     @Column(name = "ACCT_BALANCE")
     private int balance;
 
@@ -33,8 +36,9 @@ public class Account {
 
     @Version
     @Column(name = "ACCT_OPTLOCK_VERSION")
-    private int optlockVersion;
+    private int optLockVersion;
 
+    @NotNull(message = "{acct.holder.missing}")
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST,
                           CascadeType.REFRESH,
                           CascadeType.DETACH}, optional = false)
@@ -42,9 +46,8 @@ public class Account {
     private Holder holder;
 
     /**
-     * Creates a new instance with the specified holder and the balance zero.
-     * Note that an account always has exactly one holder. A unique account
-     * number will be set on the newly created instance.
+     * Behaves like {@link #Account(Holder, int)}, except that the balance is
+     * set to zero.
      *
      * @param holder The account holder.
      */
@@ -53,9 +56,14 @@ public class Account {
     }
 
     /**
-     * Creates a new instance with the specified holder and balance. Note that
-     * an account always has exactly one holder. A unique account number will be
-     * set on the newly created instance.
+     * <p>Creates a new instance with the specified holder and balance. Note
+     * that an account always has exactly one holder. The newly created account
+     * will <em>not</em> be passed to the specified holder, that must be done
+     * after the constructor returns and the new instance is completely
+     * created.</p>
+     *
+     * <p>A unique account number will be set on the newly created
+     * instance.</p>
      *
      * @param holder  The account holder.
      * @param balance The initial balance.
@@ -63,6 +71,8 @@ public class Account {
     public Account(Holder holder, int balance) {
         this.holder = holder;
         this.balance = balance;
+        acctNo =
+            BeanFactory.getBean(BusinessIdGenerator.class).generateAcctNo();
     }
 
     /**
@@ -71,24 +81,17 @@ public class Account {
     protected Account() {
     }
 
-    /**
-     * Returns the balance of the account.
-     */
+    @Override
     public int getbalance() {
         return balance;
     }
 
-    /**
-     * Returns the account number. This number is unique for each account in the
-     * bank.
-     */
+    @Override
     public long getAcctNo() {
         return acctNo;
     }
 
-    /**
-     * Returns the account holder. An account always has exactly one holder.
-     */
+    @Override
     public Holder getHolder() {
         return holder;
     }

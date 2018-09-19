@@ -1,5 +1,6 @@
 package se.kth.id1212.appserv.bank.config;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,10 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -38,6 +43,12 @@ class BankConfigTest {
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
+
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
+    }
 
     @BeforeEach
     void setup() throws Exception {

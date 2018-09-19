@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
@@ -27,6 +28,8 @@ import java.util.Locale;
  * Loads all configuration for the entire bank web app. Note that there are
  * config settings also in the file <code>application.properties</code>.
  */
+@EnableTransactionManagement // Needed for @Transactional attribute outside
+// repositories.
 @EnableWebMvc
 @Configuration
 public class BankConfig implements WebMvcConfigurer, ApplicationContextAware {

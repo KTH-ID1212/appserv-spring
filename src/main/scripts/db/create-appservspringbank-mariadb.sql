@@ -1,14 +1,18 @@
-/*
- * Assumes the database already exists. The spring app uses the database name `appservspringbank`,
- * create such a database before running this script. Run the script with the command
- * mysql appservspringbank < src/scripts/db/create-appservspringbank-mariadb.sql -p
- */
+-- Assumes the database already exists. The spring app uses the database name `appservspringbank`,
+-- create such a database before running this script. Run the script with the command
+-- mysql appservspringbank < src/scripts/db/create-appservspringbank-mariadb.sql -p
+
 
 --
--- Table structure for table `HOLDER`
+-- Drop all tables;
 --
+DROP TABLE IF EXISTS `BANK_SEQUENCE`;
+DROP TABLE IF EXISTS `ACCOUNT`;
 DROP TABLE IF EXISTS `HOLDER`;
 
+--
+-- Create for table `HOLDER`
+--
 CREATE TABLE `HOLDER` (
   `HLD_ID` bigint(20) NOT NULL,
   `HLD_NO` bigint(20) NOT NULL,
@@ -19,10 +23,8 @@ CREATE TABLE `HOLDER` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `ACCOUNT`
+-- Create table `ACCOUNT`
 --
-DROP TABLE IF EXISTS `ACCOUNT`;
-
 CREATE TABLE `ACCOUNT` (
   `ACCT_ID` bigint(20) NOT NULL,
   `FK_ACCOUNT_HOLDER` bigint(20) NOT NULL,
@@ -36,9 +38,8 @@ CREATE TABLE `ACCOUNT` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Table structure for table `BANK_SEQUENCE`
+-- Create table `BANK_SEQUENCE`
 --
-DROP TABLE IF EXISTS `BANK_SEQUENCE`;
 CREATE TABLE `BANK_SEQUENCE` (
   `next_not_cached_value` bigint(21) NOT NULL,
   `minimum_value` bigint(21) NOT NULL,
