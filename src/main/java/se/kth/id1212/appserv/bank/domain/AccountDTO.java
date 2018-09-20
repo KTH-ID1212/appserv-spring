@@ -8,7 +8,7 @@ public interface AccountDTO {
     /**
      * Returns the balance of the account.
      */
-    int getbalance();
+    int getBalance();
 
     /**
      * Returns the account number. This number is unique for each account in the

@@ -22,7 +22,7 @@ import java.sql.SQLException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static se.kth.id1212.appserv.bank.presentation.Util.containsElements;
+import static se.kth.id1212.appserv.bank.presentation.PresentationTestHelper.containsElements;
 
 @SpringJUnitWebConfig(initializers = ConfigFileApplicationContextInitializer.class)
 @EnableAutoConfiguration

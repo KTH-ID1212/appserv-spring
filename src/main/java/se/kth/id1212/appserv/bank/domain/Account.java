@@ -82,7 +82,7 @@ public class Account implements AccountDTO {
     }
 
     @Override
-    public int getbalance() {
+    public int getBalance() {
         return balance;
     }
 

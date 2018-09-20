@@ -1,7 +1,6 @@
 package se.kth.id1212.appserv.bank.domain;
 
 import net.jcip.annotations.NotThreadSafe;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,7 +120,7 @@ class AccountTest {
         assertThat(stringRepresentation, containsString("holder"));
         assertThat(stringRepresentation, containsString("optLockVersion"));
         assertThat(stringRepresentation,
-                   containsString(Integer.toString(instance.getbalance())));
+                   containsString(Integer.toString(instance.getBalance())));
     }
 
     private void testInvalidAcct(Account acct, String... expectedMsgs) {

@@ -57,29 +57,30 @@ class CreateAcctFormTest {
 
     @Test
     void testNullHolder() {
-        testInvalidHolder(null, "{create-acct.holder.missing}");
+        testInvalidHolder(null, "{create-acct.holder-name.missing}");
     }
 
     @Test
     void testEmptyHolder() {
-        testInvalidHolder("", "{create-acct.holder.length}",
-                              "{create-acct.holder.missing}");
+        testInvalidHolder("", "{create-acct.holder-name.length}",
+                              "{create-acct.holder-name.missing}");
     }
 
     @Test
     void testTooShortHolder() {
-        testInvalidHolder("a", "{create-acct.holder.length}");
+        testInvalidHolder("a", "{create-acct.holder-name.length}");
     }
 
     @Test
     void testTooLongHolder() {
         testInvalidHolder("abcdeabcdeabcdeabcdeabcdeabcdep", "{create-acct" +
-                                                             ".holder.length}");
+                                                             ".holder-name" +
+                                                             ".length}");
     }
 
     @Test
     void testHolderWithInvalidChar() {
-        testInvalidHolder("a.", "{create-acct.holder.invalid-char}");
+        testInvalidHolder("a.", "{create-acct.holder-name.invalid-char}");
     }
 
     @Test
@@ -95,7 +96,7 @@ class CreateAcctFormTest {
     private void testvalidBalance(Integer validBalance) {
         String validHolder = "abc";
         CreateAcctForm sut = new CreateAcctForm();
-        sut.setHolder(validHolder);
+        sut.setHolderName(validHolder);
         sut.setBalance(validBalance);
         Set<ConstraintViolation<CreateAcctForm>> result =
             validator.validate(sut);
@@ -105,7 +106,7 @@ class CreateAcctFormTest {
     private void testValidHolder(String validHolder) {
         int validBalance = 1;
         CreateAcctForm sut = new CreateAcctForm();
-        sut.setHolder(validHolder);
+        sut.setHolderName(validHolder);
         sut.setBalance(validBalance);
         Set<ConstraintViolation<CreateAcctForm>> result =
             validator.validate(sut);
@@ -115,7 +116,7 @@ class CreateAcctFormTest {
     private void testInvalidBalance(Integer invalidBalance, String expectedMsg) {
         String validHolder = "abc";
         CreateAcctForm sut = new CreateAcctForm();
-        sut.setHolder(validHolder);
+        sut.setHolderName(validHolder);
         sut.setBalance(invalidBalance);
         Set<ConstraintViolation<CreateAcctForm>> result =
             validator.validate(sut);
@@ -129,7 +130,7 @@ class CreateAcctFormTest {
         int validBalance = 1;
         CreateAcctForm sut = new CreateAcctForm();
         sut.setBalance(validBalance);
-        sut.setHolder(invalidHolder);
+        sut.setHolderName(invalidHolder);
         Set<ConstraintViolation<CreateAcctForm>> result =
             validator.validate(sut);
         assertThat(result.size(), is(expectedMsgs.length));

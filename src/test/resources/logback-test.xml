@@ -21,13 +21,14 @@
         </encoder>
     </appender>
 
-    <logger name="se.kth.id1212.appserv.bank" level="debug" additivity="false">
+    <logger name="se.kth.id1212.appserv.bank" level="off" additivity="false">
         <appender-ref ref="FILE"/>
-        <!--<appender-ref ref="STDOUT"/>-->
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <!-- Do not log exception handling. -->
-    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="off" additivity="false">
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="off"
+            additivity="false">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </logger>
@@ -40,8 +41,8 @@
 
     <!-- Log transaction demarcation. -->
     <!--<logger name="org.springframework.transaction.interceptor" level="debug" additivity="false">-->
-        <!--<appender-ref ref="FILE"/>-->
-        <!--<appender-ref ref="STDOUT"/>-->
+    <!--<appender-ref ref="FILE"/>-->
+    <!--<appender-ref ref="STDOUT"/>-->
     <!--</logger>-->
 
     <root level="warn">

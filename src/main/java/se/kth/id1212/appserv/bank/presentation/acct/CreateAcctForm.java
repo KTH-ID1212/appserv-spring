@@ -12,13 +12,14 @@ import javax.validation.constraints.Size;
  * A form bean for the account creation form.
  */
 class CreateAcctForm {
-    @NotBlank(message = "{create-acct.holder.missing}")
+    @NotBlank(message = "{create-acct.holder-name.missing}")
     // The regex below should permit only characters, but asterisk is
     // unfortunately also valid.
-    @Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "{create-acct.holder" +
+    @Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "{create-acct" +
+                                                      ".holder-name" +
                                                       ".invalid-char}")
-    @Size(min = 2, max = 30, message = "{create-acct.holder.length}")
-    private String holder;
+    @Size(min = 2, max = 30, message = "{create-acct.holder-name.length}")
+    private String holderName;
 
     @NotNull(message = "{create-acct.balance.missing}")
     @PositiveOrZero(message = "{create-acct.balance.negative}")
@@ -39,18 +40,18 @@ class CreateAcctForm {
     }
 
     /**
-     * @return The name of the holder of the account that will be created.
+     * @return The name of the holderName of the account that will be created.
      */
-    public String getHolder() {
-        return holder;
+    public String getHolderName() {
+        return holderName;
     }
 
     /**
-     * @param holder The name of the holder of the account that will be
+     * @param holderName The name of the holderName of the account that will be
      *               created.
      */
-    public void setHolder(String holder) {
-        this.holder = holder;
+    public void setHolderName(String holderName) {
+        this.holderName = holderName;
     }
 
     @Override

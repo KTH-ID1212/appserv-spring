@@ -28,6 +28,22 @@ public class BankService {
     private HolderRepository holderRepo;
 
     /**
+     * Convenience method that creates both holder and account in the same
+     * transaction, by calling first {@link #createHolder(String)} and
+     * then {@link #createAccount(HolderDTO, int)}.
+     *
+     * @param holderName  The account holder's name.
+     * @param balance The initial balance.
+     * @return The newly created account.
+     * @throws IllegalBankTransactionException If failed to create holder.
+     */
+    public AccountDTO createAccountAndHolder(String holderName, int balance)
+        throws IllegalBankTransactionException {
+        HolderDTO holder = createHolder(holderName);
+        return createAccount(holder, balance);
+    }
+
+    /**
      * Creates an account owned by the specified account holder. Note that there
      * is only one type of account in the bank.
      *
@@ -37,7 +53,7 @@ public class BankService {
      * @throws IllegalBankTransactionException If the specified holder does not
      *                                         exist.
      */
-    public AccountDTO createAccount(Holder holder, int balance)
+    public AccountDTO createAccount(HolderDTO holder, int balance)
         throws IllegalBankTransactionException {
         Holder holderEntity =
             holderRepo.findHolderByHolderNo(holder.getHolderNo());

@@ -2,12 +2,17 @@ package se.kth.id1212.appserv.bank.presentation.acct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import se.kth.id1212.appserv.bank.application.BankService;
+import se.kth.id1212.appserv.bank.domain.AccountDTO;
+import se.kth.id1212.appserv.bank.domain.IllegalBankTransactionException;
 
 import javax.validation.Valid;
 
@@ -15,6 +20,7 @@ import javax.validation.Valid;
  * Handles all HTTP requests to context root.
  */
 @Controller
+@Scope("session")
 public class AcctController {
     static final String DEFAULT_PAGE_URL = "/";
     static final String SELECT_ACCT_PAGE_URL = "select-acct";
@@ -25,10 +31,14 @@ public class AcctController {
     static final String WITHDRAW_URL = "withdraw";
     private static final Logger LOGGER =
         LoggerFactory.getLogger(AcctController.class);
+    private static final String CURRENT_ACCT_OBJ_NAME = "currentAcct";
     private static final String DEPOSIT_FORM_OBJ_NAME = "depositForm";
     private static final String WITHDRAW_FORM_OBJ_NAME = "withdrawForm";
     private static final String FIND_ACCT_FORM_OBJ_NAME = "findAcctForm";
     private static final String CREATE_ACCT_FORM_OBJ_NAME = "createAcctForm";
+    @Autowired
+    private BankService service;
+    private AccountDTO currentAcct;
 
     /**
      * No page is specified, redirect to the welcome page.
@@ -65,19 +75,27 @@ public class AcctController {
      */
     @PostMapping("/" + CREATE_ACCT_URL)
     public String createAccount(@Valid CreateAcctForm createAcctForm,
-                                BindingResult bindingResult, Model model) {
+                                BindingResult bindingResult, Model model)
+        throws IllegalBankTransactionException {
         LOGGER.trace("Post of account creation data.");
         LOGGER.trace("Form data: " + createAcctForm);
         if (bindingResult.hasErrors()) {
             model.addAttribute(FIND_ACCT_FORM_OBJ_NAME, new FindAcctForm());
             return SELECT_ACCT_PAGE_URL;
         }
+        currentAcct =
+            service.createAccountAndHolder(createAcctForm.getHolderName(),
+                                       createAcctForm.getBalance());
         return showAcctPage(model, new DepositOrWithdrawForm(),
                             new DepositOrWithdrawForm());
     }
 
-    private String showAcctPage(Model model, DepositOrWithdrawForm depositForm,
+    private String showAcctPage(Model model,
+                                DepositOrWithdrawForm depositForm,
                                 DepositOrWithdrawForm withdrawForm) {
+        if (currentAcct != null) {
+            model.addAttribute(CURRENT_ACCT_OBJ_NAME, currentAcct);
+        }
         if (depositForm != null) {
             model.addAttribute(DEPOSIT_FORM_OBJ_NAME, depositForm);
         }
@@ -117,6 +135,7 @@ public class AcctController {
             model.addAttribute(CREATE_ACCT_FORM_OBJ_NAME, new CreateAcctForm());
             return SELECT_ACCT_PAGE_URL;
         }
+        currentAcct = service.findAccount(findAcctForm.getNumber());
         return showAcctPage(model, new DepositOrWithdrawForm(),
                             new DepositOrWithdrawForm());
     }

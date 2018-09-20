@@ -70,7 +70,7 @@ public class BankServiceTest {
     void testCreateAcctForNonExistingHolder() {
         Exception exception =
             assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.createAccount(holder, acct.getbalance());
+                instance.createAccount(holder, acct.getBalance());
             });
         assertThat(exception.getMessage(), containsString("does not exist"));
         assertThat(exception.getMessage(), containsString(holder.toString()));
@@ -80,11 +80,11 @@ public class BankServiceTest {
     void testCreateAcctForExistingHolder()
         throws IllegalBankTransactionException {
         holderRepo.save(holder);
-        instance.createAccount(holder, acct.getbalance());
+        instance.createAccount(holder, acct.getBalance());
         List<Account> acctsInDb = accountRepo.findAll();
         assertThat(acctsInDb.size(), is(1));
         assertThat(acctsInDb,
-                   hasItem(hasProperty("balance", equalTo(acct.getbalance()))));
+                   hasItem(hasProperty("balance", equalTo(acct.getBalance()))));
         assertThat(acctsInDb.get(0).getHolder().getName(),
                    is(holder.getName()));
     }
@@ -109,8 +109,8 @@ public class BankServiceTest {
         accountRepo.save(acct);
         instance.deposit(acct, amtToDeposit);
         Account acctInDb = accountRepo.findAccountByAcctNo(acct.getAcctNo());
-        int expectedBalance = acct.getbalance() + amtToDeposit;
-        assertThat(acctInDb.getbalance(), is(expectedBalance));
+        int expectedBalance = acct.getBalance() + amtToDeposit;
+        assertThat(acctInDb.getBalance(), is(expectedBalance));
     }
 
     @Test
@@ -156,8 +156,8 @@ public class BankServiceTest {
         accountRepo.save(acct);
         instance.withdraw(acct, amtToWithdraw);
         Account acctInDb = accountRepo.findAccountByAcctNo(acct.getAcctNo());
-        int expectedBalance = acct.getbalance() - amtToWithdraw;
-        assertThat(acctInDb.getbalance(), is(expectedBalance));
+        int expectedBalance = acct.getBalance() - amtToWithdraw;
+        assertThat(acctInDb.getBalance(), is(expectedBalance));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class BankServiceTest {
 
     @Test
     void testOverdraft() {
-        int amtToWithdraw = acct.getbalance() + 1;
+        int amtToWithdraw = acct.getBalance() + 1;
         accountRepo.save(acct);
         Exception exception =
             assertThrows(IllegalBankTransactionException.class, () -> {
