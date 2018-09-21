@@ -36,30 +36,20 @@ class FindAcctFormTest {
     }
 
     @Test
-    void testNegNo() {
-        testInvalidNo(-1, "{find-acct.number.not-pos}");
-    }
-
-    @Test
     void testNullNo() {
         testInvalidNo(null, "{find-acct.number.missing}");
     }
 
     @Test
-    void testZeroNo() {
-        testInvalidNo(0, "{find-acct.number.not-pos}");
-    }
-
-    @Test
     void testCorrectNo() {
         FindAcctForm sut = new FindAcctForm();
-        sut.setNumber(1);
+        sut.setNumber(1L);
         Set<ConstraintViolation<FindAcctForm>> result =
             validator.validate(sut);
         assertThat(result, is(empty()));
     }
 
-    private void testInvalidNo(Integer invalidNo, String expectedMsg) {
+    private void testInvalidNo(Long invalidNo, String expectedMsg) {
         FindAcctForm sut = new FindAcctForm();
         sut.setNumber(invalidNo);
         Set<ConstraintViolation<FindAcctForm>> result =

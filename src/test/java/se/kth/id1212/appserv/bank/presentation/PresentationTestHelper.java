@@ -79,7 +79,7 @@ public class PresentationTestHelper {
         }
 
         if (session == null) {
-            return mockMvc.perform(get("/" + Url));
+            return mockMvc.perform(get(Url));
         }
 
         return mockMvc.perform(get(Url).session((MockHttpSession)session));
@@ -120,20 +120,20 @@ public class PresentationTestHelper {
         }
 
         if (session == null && params == null) {
-            return mockMvc.perform(post("/" + Url));
+            return mockMvc.perform(post(Url));
         }
 
         if (session == null && params != null) {
-            return mockMvc.perform(post("/" + Url).params(params));
+            return mockMvc.perform(post(Url).params(params));
         }
 
         if (session != null && params == null) {
             return mockMvc
-                .perform(post("/" + Url).session((MockHttpSession)session));
+                .perform(post(Url).session((MockHttpSession)session));
         }
 
         return mockMvc.perform(
-            post("/" + Url).session((MockHttpSession)session).params(params));
+            post(Url).session((MockHttpSession)session).params(params));
     }
 
     /**

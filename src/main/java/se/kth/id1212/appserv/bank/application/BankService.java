@@ -16,8 +16,8 @@ import se.kth.id1212.appserv.bank.repository.HolderRepository;
  * performed by the domain layer.</p>
  *
  * <p>Transaction demarcation is defined by methods in this class, a
- * transaction starts when a method is called from the presentation layer, and
- * ends (commit or rollback) when that method returns.</p>
+ * transaction starts when a method is called from the presentation layer, and ends (commit or rollback) when that
+ * method returns.</p>
  */
 @Transactional(rollbackFor = Exception.class)
 @Service
@@ -28,38 +28,32 @@ public class BankService {
     private HolderRepository holderRepo;
 
     /**
-     * Convenience method that creates both holder and account in the same
-     * transaction, by calling first {@link #createHolder(String)} and
-     * then {@link #createAccount(HolderDTO, int)}.
+     * Convenience method that creates both holder and account in the same transaction, by calling first {@link
+     * #createHolder(String)} and then {@link #createAccount(HolderDTO, int)}.
      *
-     * @param holderName  The account holder's name.
-     * @param balance The initial balance.
+     * @param holderName The account holder's name.
+     * @param balance    The initial balance.
      * @return The newly created account.
      * @throws IllegalBankTransactionException If failed to create holder.
      */
-    public AccountDTO createAccountAndHolder(String holderName, int balance)
-        throws IllegalBankTransactionException {
+    public AccountDTO createAccountAndHolder(String holderName, int balance) throws IllegalBankTransactionException {
         HolderDTO holder = createHolder(holderName);
         return createAccount(holder, balance);
     }
 
     /**
-     * Creates an account owned by the specified account holder. Note that there
-     * is only one type of account in the bank.
+     * Creates an account owned by the specified account holder. Note that there is only one type of account in the
+     * bank.
      *
      * @param holder  The account holder.
      * @param balance The initial balance.
      * @return The newly created account.
-     * @throws IllegalBankTransactionException If the specified holder does not
-     *                                         exist.
+     * @throws IllegalBankTransactionException If the specified holder does not exist.
      */
-    public AccountDTO createAccount(HolderDTO holder, int balance)
-        throws IllegalBankTransactionException {
-        Holder holderEntity =
-            holderRepo.findHolderByHolderNo(holder.getHolderNo());
+    public AccountDTO createAccount(HolderDTO holder, int balance) throws IllegalBankTransactionException {
+        Holder holderEntity = holderRepo.findHolderByHolderNo(holder.getHolderNo());
         if (holderEntity == null) {
-            throw new IllegalBankTransactionException(
-                "Holder does not exist," + " holder: " + holder);
+            throw new IllegalBankTransactionException("Holder does not exist," + " holder: " + holder);
         }
         return accountRepo.save(new Account(holderEntity, balance));
     }
@@ -68,8 +62,7 @@ public class BankService {
      * Searches for the account with the specified account number.
      *
      * @param acctNo The number of the searched account.
-     * @return The account with the specified number, or null if no such account
-     * was found.
+     * @return The account with the specified number, or null if no such account was found.
      */
     public AccountDTO findAccount(long acctNo) {
         return accountRepo.findAccountByAcctNo(acctNo);
@@ -80,16 +73,18 @@ public class BankService {
      *
      * @param acct The account to which to deposit.
      * @param amt  The amount to deposit.
-     * @throws IllegalBankTransactionException When attempting to deposit a
-     *                                         negative or zero amount.
+     * @throws IllegalBankTransactionException When attempting to deposit a negative or zero amount.
      */
-    public void deposit(Account acct, int amt)
-        throws IllegalBankTransactionException {
+    public void deposit(AccountDTO acct, int amt) throws IllegalBankTransactionException {
+        if (acct == null) {
+            throw new IllegalBankTransactionException("Attempt to deposit to null account.");
+        }
+
         Account acctEntity = accountRepo.findAccountByAcctNo(acct.getAcctNo());
         if (acctEntity == null) {
-            throw new IllegalBankTransactionException(
-                "Account does not exist, account: " + acct);
+            throw new IllegalBankTransactionException("Attempt to deposit to non-existing account: " + acct);
         }
+
         acctEntity.deposit(amt);
     }
 
@@ -98,18 +93,19 @@ public class BankService {
      *
      * @param acct The account from which to withdraw.
      * @param amt  The amount to withdraw.
-     * @throws IllegalBankTransactionException When attempting to withdraw a
-     *                                         negative or zero amount, or if
-     *                                         withdrawal would result in a
-     *                                         negative balance.
+     * @throws IllegalBankTransactionException When attempting to withdraw a negative or zero amount, or if withdrawal
+     *                                         would result in a negative balance.
      */
-    public void withdraw(Account acct, int amt)
-        throws IllegalBankTransactionException {
+    public void withdraw(AccountDTO acct, int amt) throws IllegalBankTransactionException {
+        if (acct == null) {
+            throw new IllegalBankTransactionException("Attempt to withdraw from null account.");
+        }
+
         Account acctEntity = accountRepo.findAccountByAcctNo(acct.getAcctNo());
         if (acctEntity == null) {
-            throw new IllegalBankTransactionException(
-                "Account does not exist, account: " + acct);
+            throw new IllegalBankTransactionException("Attempt to withdraw from non-existing account: " + acct);
         }
+
         acctEntity.withdraw(amt);
     }
 

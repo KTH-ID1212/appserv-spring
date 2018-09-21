@@ -40,10 +40,10 @@
     </logger>
 
     <!-- Log transaction demarcation. -->
-    <!--<logger name="org.springframework.transaction.interceptor" level="debug" additivity="false">-->
-    <!--<appender-ref ref="FILE"/>-->
-    <!--<appender-ref ref="STDOUT"/>-->
-    <!--</logger>-->
+    <logger name="org.springframework.transaction.interceptor" level="trace" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
 
     <root level="warn">
         <appender-ref ref="FILE"/>

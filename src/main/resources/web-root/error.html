@@ -9,9 +9,14 @@
 <main layout:fragment="content">
 
     <section>
-        <h1 th:if="${#messages.msgOrNull('error.' + __${errorType}__) != null}" th:text="#{error.__${errorType}__}">Error</h1>
-        <h1 th:if="${#messages.msgOrNull('error.' + __${errorType}__) == null}" th:text="#{error.generic}">Error</h1>
-        <p class="info" th:text="#{error.__${errorType}__.info}">Current error details</p>
+        <h1 th:if="${#messages.msgOrNull('error.__${errorType}__') != null}"
+            th:text="#{error.__${errorType}__}">Error</h1>
+        <h1 th:if="${#messages.msgOrNull('error.__${errorType}__') == null}"
+            th:text="#{error.generic}">Error</h1>
+        <p class="info" th:if="${#messages.msgOrNull('error.__${errorType}__.info') != null}"
+           th:text="#{error.__${errorType}__.info}">Current error details</p>
+        <p class="info" th:if="${#messages.msgOrNull('error.__${errorType}__.info') == null}"
+           th:text="#{error.generic.info}">Current error details</p>
     </section>
 
 </main>

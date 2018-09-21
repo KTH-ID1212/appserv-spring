@@ -48,8 +48,7 @@ public class BankServiceTest {
     private Holder holder;
 
     @AfterAll
-    static void cleanup()
-        throws SQLException, IOException, ClassNotFoundException {
+    static void cleanup() throws SQLException, IOException, ClassNotFoundException {
         DbUtil.emptyDb();
     }
 
@@ -67,26 +66,31 @@ public class BankServiceTest {
     }
 
     @Test
+    void testCreateAcctAndHolder() throws IllegalBankTransactionException {
+        instance.createAccountAndHolder(holder.getName(), acct.getBalance());
+        List<Account> acctsInDb = accountRepo.findAll();
+        assertThat(acctsInDb.size(), is(1));
+        assertThat(acctsInDb, hasItem(hasProperty("balance", equalTo(acct.getBalance()))));
+        assertThat(acctsInDb.get(0).getHolder().getName(), is(holder.getName()));
+    }
+
+    @Test
     void testCreateAcctForNonExistingHolder() {
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.createAccount(holder, acct.getBalance());
-            });
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.createAccount(holder, acct.getBalance());
+        });
         assertThat(exception.getMessage(), containsString("does not exist"));
         assertThat(exception.getMessage(), containsString(holder.toString()));
     }
 
     @Test
-    void testCreateAcctForExistingHolder()
-        throws IllegalBankTransactionException {
+    void testCreateAcctForExistingHolder() throws IllegalBankTransactionException {
         holderRepo.save(holder);
         instance.createAccount(holder, acct.getBalance());
         List<Account> acctsInDb = accountRepo.findAll();
         assertThat(acctsInDb.size(), is(1));
-        assertThat(acctsInDb,
-                   hasItem(hasProperty("balance", equalTo(acct.getBalance()))));
-        assertThat(acctsInDb.get(0).getHolder().getName(),
-                   is(holder.getName()));
+        assertThat(acctsInDb, hasItem(hasProperty("balance", equalTo(acct.getBalance()))));
+        assertThat(acctsInDb.get(0).getHolder().getName(), is(holder.getName()));
     }
 
     @Test
@@ -117,37 +121,41 @@ public class BankServiceTest {
     void testDepositNegAmt() {
         int amtToDeposit = -5;
         accountRepo.save(acct);
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.deposit(acct, amtToDeposit);
-            });
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.deposit(acct, amtToDeposit);
+        });
         assertThat(exception.getMessage(), containsString("non-positive"));
-        assertThat(exception.getMessage(),
-                   containsString(Integer.toString(amtToDeposit)));
+        assertThat(exception.getMessage(), containsString(Integer.toString(amtToDeposit)));
     }
 
     @Test
     void testDepositZero() {
         int amtToDeposit = 0;
         accountRepo.save(acct);
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.deposit(acct, amtToDeposit);
-            });
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.deposit(acct, amtToDeposit);
+        });
         assertThat(exception.getMessage(), containsString("non-positive"));
-        assertThat(exception.getMessage(),
-                   containsString(Integer.toString(amtToDeposit)));
+        assertThat(exception.getMessage(), containsString(Integer.toString(amtToDeposit)));
     }
 
     @Test
     void testDepositToNonExistingAcct() {
         int amtToDeposit = 5;
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.deposit(acct, amtToDeposit);
-            });
-        assertThat(exception.getMessage(), containsString("does not exist"));
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.deposit(acct, amtToDeposit);
+        });
+        assertThat(exception.getMessage(), containsString("non-existing"));
         assertThat(exception.getMessage(), containsString(acct.toString()));
+    }
+
+    @Test
+    void testDepositToNullAcct() {
+        int amtToDeposit = 5;
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.deposit(null, amtToDeposit);
+        });
+        assertThat(exception.getMessage(), containsString("null"));
     }
 
     @Test
@@ -164,49 +172,42 @@ public class BankServiceTest {
     void testWithdrawNegAmt() {
         int amtToWithdraw = -5;
         accountRepo.save(acct);
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.withdraw(acct, amtToWithdraw);
-            });
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.withdraw(acct, amtToWithdraw);
+        });
         assertThat(exception.getMessage(), containsString("non-positive"));
-        assertThat(exception.getMessage(),
-                   containsString(Integer.toString(amtToWithdraw)));
+        assertThat(exception.getMessage(), containsString(Integer.toString(amtToWithdraw)));
     }
 
     @Test
     void testWithdrawZero() {
         int amtToWithdraw = 0;
         accountRepo.save(acct);
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.withdraw(acct, amtToWithdraw);
-            });
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.withdraw(acct, amtToWithdraw);
+        });
         assertThat(exception.getMessage(), containsString("non-positive"));
-        assertThat(exception.getMessage(),
-                   containsString(Integer.toString(amtToWithdraw)));
+        assertThat(exception.getMessage(), containsString(Integer.toString(amtToWithdraw)));
     }
 
     @Test
     void testOverdraft() {
         int amtToWithdraw = acct.getBalance() + 1;
         accountRepo.save(acct);
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.withdraw(acct, amtToWithdraw);
-            });
-        assertThat(exception.getMessage(), containsString("Overdraft attempt"));
-        assertThat(exception.getMessage(),
-                   containsString(Integer.toString(amtToWithdraw)));
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.withdraw(acct, amtToWithdraw);
+        });
+        assertThat(exception.getMessage(), containsString("greater than balance"));
+        assertThat(exception.getMessage(), containsString(Integer.toString(amtToWithdraw)));
     }
 
     @Test
     void testWithdrawFromNonExistingAcct() {
         int amtToWithdraw = 5;
-        Exception exception =
-            assertThrows(IllegalBankTransactionException.class, () -> {
-                instance.withdraw(acct, amtToWithdraw);
-            });
-        assertThat(exception.getMessage(), containsString("does not exist"));
+        Exception exception = assertThrows(IllegalBankTransactionException.class, () -> {
+            instance.withdraw(acct, amtToWithdraw);
+        });
+        assertThat(exception.getMessage(), containsString("non-existing"));
         assertThat(exception.getMessage(), containsString(acct.toString()));
     }
 
@@ -215,7 +216,6 @@ public class BankServiceTest {
         instance.createHolder(holder.getName());
         List<Holder> holdersInDb = holderRepo.findAll();
         assertThat(holdersInDb.size(), is(1));
-        assertThat(holdersInDb,
-                   hasItem(hasProperty("name", equalTo(holder.getName()))));
+        assertThat(holdersInDb, hasItem(hasProperty("name", equalTo(holder.getName()))));
     }
 }
