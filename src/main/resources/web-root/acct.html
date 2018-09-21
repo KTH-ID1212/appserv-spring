@@ -11,8 +11,12 @@
     <section>
         <h1 th:text="#{acct.details}">Account</h1>
         <p class="info" th:text="#{acct.details.info}">Current account details</p>
-        <p class="form"><span th:text="#{acct.details.number}">Account number</span>: 123, <span
-                th:text="#{acct.details.balance}">Balance</span>: 123 SEK</p>
+        <p class="form" th:object="${currentAcct}">
+            <span th:text="#{acct.details.holderName-no}">Holder number</span>: <span th:text="*{holder.holderNo}">123</span>,
+            <span th:text="#{acct.details.holderName-name}">Holder name</span>: <span th:text="*{holder.name}">123</span>,
+            <span th:text="#{acct.details.acct-no}">Account number</span>: <span th:text="*{acctNo}">123</span>,
+            <span th:text="#{acct.details.balance}">Balance</span>: <span th:text="*{balance}">123</span> SEK
+        </p>
     </section>
 
     <section>

@@ -12,11 +12,11 @@
         <h1 th:text="#{select-acct.create-acct}">Create Account</h1>
         <p class="info" th:text="#{select-acct.create-acct.info}">Please enter account details</p>
         <form th:action="@{/create-acct}" th:object="${createAcctForm}" method="post">
-            <p class="form"><label for="create-acct-holder" th:text="#{select-acct.create-acct.holder}">Account
+            <p class="form"><label for="create-acct-holder" th:text="#{select-acct.create-acct.holder-name}">Account
                 Holder</label>:<input type="text"
-                                      th:field="*{holder}"
+                                      th:field="*{holderName}"
                                       id="create-acct-holder"/>
-                <span class="error" th:if="${#fields.hasErrors('holder')}" th:errors="*{holder}">Name Error
+                <span class="error" th:if="${#fields.hasErrors('holderName')}" th:errors="*{holderName}">Name Error
             </span></p>
             <p class="form"><label for="create-balance" th:text="#{select-acct.create-acct.number}">Initial
                 Balance</label>:<input type="text" th:field="*{balance}"

@@ -39,6 +39,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
@@ -54,6 +58,22 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -75,8 +95,8 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>1.3</version>
+            <artifactId>java-hamcrest</artifactId>
+            <version>2.0.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,6 +109,12 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.11.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stephenc.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+            <version>1.0-1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -123,12 +149,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.10.0</version>
                 <configuration>
                     <!--<analysisCache>true</analysisCache> Can not be used after mvn:clean, since cache is removed.-->
                     <verbose>true</verbose>
                     <failOnViolation>true</failOnViolation>
                     <minimumTokens>50</minimumTokens>
+                    <excludeFromFailureFile>excludeFromPmdCheck.properties</excludeFromFailureFile>
                     <outputDirectory>${pmd.output.dir}</outputDirectory>
                     <targetDirectory>${pmd.target.dir}</targetDirectory>
                 </configuration>
@@ -206,8 +233,9 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <forkCount>3</forkCount>
-                    <reuseForks>true</reuseForks>
+                    <forkCount>0</forkCount>
+                    <parallel>methods</parallel>
+                    <threadCount>10</threadCount>
                     <argLine>-Xmx1024m</argLine>
                 </configuration>
                 <dependencies>

@@ -1,13 +1,17 @@
 package se.kth.id1212.appserv.bank.presentation.acct;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -22,13 +26,13 @@ import static org.hamcrest.Matchers.hasProperty;
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig and
     // @EnableAutoConfiguration, but are we using JUnit5 in that case?
 class FindAcctFormTest {
-
     @Autowired
     private Validator validator;
 
-    @Test
-    void testNegNo() {
-        testInvalidNo(-1, "{find-acct.number.not-pos}");
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
     }
 
     @Test
@@ -37,20 +41,15 @@ class FindAcctFormTest {
     }
 
     @Test
-    void testZeroNo() {
-        testInvalidNo(0, "{find-acct.number.not-pos}");
-    }
-
-    @Test
     void testCorrectNo() {
         FindAcctForm sut = new FindAcctForm();
-        sut.setNumber(1);
+        sut.setNumber(1L);
         Set<ConstraintViolation<FindAcctForm>> result =
             validator.validate(sut);
         assertThat(result, is(empty()));
     }
 
-    private void testInvalidNo(Integer invalidNo, String expectedMsg) {
+    private void testInvalidNo(Long invalidNo, String expectedMsg) {
         FindAcctForm sut = new FindAcctForm();
         sut.setNumber(invalidNo);
         Set<ConstraintViolation<FindAcctForm>> result =

@@ -1,13 +1,17 @@
 package se.kth.id1212.appserv.bank.presentation.acct;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import se.kth.id1212.appserv.bank.repository.DbUtil;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -23,9 +27,14 @@ import static org.hamcrest.CoreMatchers.not;
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig and
     // @EnableAutoConfiguration, but are we using JUnit5 in that case?
 class DepositOrWithdrawFormTest {
-
     @Autowired
     private Validator validator;
+
+    @BeforeAll
+    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        DbUtil.emptyDb();
+    }
 
     @Test
     void testNegAmt() {

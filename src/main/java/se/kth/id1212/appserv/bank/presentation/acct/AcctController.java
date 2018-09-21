@@ -2,12 +2,18 @@ package se.kth.id1212.appserv.bank.presentation.acct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import se.kth.id1212.appserv.bank.application.BankService;
+import se.kth.id1212.appserv.bank.domain.AccountDTO;
+import se.kth.id1212.appserv.bank.domain.IllegalBankTransactionException;
+import se.kth.id1212.appserv.bank.presentation.error.ExceptionHandlers;
 
 import javax.validation.Valid;
 
@@ -15,6 +21,7 @@ import javax.validation.Valid;
  * Handles all HTTP requests to context root.
  */
 @Controller
+@Scope("session")
 public class AcctController {
     static final String DEFAULT_PAGE_URL = "/";
     static final String SELECT_ACCT_PAGE_URL = "select-acct";
@@ -23,12 +30,15 @@ public class AcctController {
     static final String FIND_ACCT_URL = "find-acct";
     static final String DEPOSIT_URL = "deposit";
     static final String WITHDRAW_URL = "withdraw";
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(AcctController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AcctController.class);
+    private static final String CURRENT_ACCT_OBJ_NAME = "currentAcct";
     private static final String DEPOSIT_FORM_OBJ_NAME = "depositForm";
     private static final String WITHDRAW_FORM_OBJ_NAME = "withdrawForm";
     private static final String FIND_ACCT_FORM_OBJ_NAME = "findAcctForm";
     private static final String CREATE_ACCT_FORM_OBJ_NAME = "createAcctForm";
+    @Autowired
+    private BankService service;
+    private AccountDTO currentAcct;
 
     /**
      * No page is specified, redirect to the welcome page.
@@ -49,8 +59,7 @@ public class AcctController {
      * @return The account selection page url.
      */
     @GetMapping("/" + SELECT_ACCT_PAGE_URL)
-    public String showAccountSelectionView(CreateAcctForm createAcctForm,
-                                           FindAcctForm findAcctForm) {
+    public String showAccountSelectionView(CreateAcctForm createAcctForm, FindAcctForm findAcctForm) {
         LOGGER.trace("Call to account selection view.");
         return SELECT_ACCT_PAGE_URL;
     }
@@ -64,20 +73,22 @@ public class AcctController {
      * @return The account page url if validation succeeds.
      */
     @PostMapping("/" + CREATE_ACCT_URL)
-    public String createAccount(@Valid CreateAcctForm createAcctForm,
-                                BindingResult bindingResult, Model model) {
+    public String createAccount(@Valid CreateAcctForm createAcctForm, BindingResult bindingResult, Model model)
+        throws IllegalBankTransactionException {
         LOGGER.trace("Post of account creation data.");
         LOGGER.trace("Form data: " + createAcctForm);
         if (bindingResult.hasErrors()) {
             model.addAttribute(FIND_ACCT_FORM_OBJ_NAME, new FindAcctForm());
             return SELECT_ACCT_PAGE_URL;
         }
-        return showAcctPage(model, new DepositOrWithdrawForm(),
-                            new DepositOrWithdrawForm());
+        currentAcct = service.createAccountAndHolder(createAcctForm.getHolderName(), createAcctForm.getBalance());
+        return showAcctPage(model, new DepositOrWithdrawForm(), new DepositOrWithdrawForm());
     }
 
-    private String showAcctPage(Model model, DepositOrWithdrawForm depositForm,
-                                DepositOrWithdrawForm withdrawForm) {
+    private String showAcctPage(Model model, DepositOrWithdrawForm depositForm, DepositOrWithdrawForm withdrawForm) {
+        if (currentAcct != null) {
+            model.addAttribute(CURRENT_ACCT_OBJ_NAME, currentAcct);
+        }
         if (depositForm != null) {
             model.addAttribute(DEPOSIT_FORM_OBJ_NAME, depositForm);
         }
@@ -88,12 +99,10 @@ public class AcctController {
     }
 
     /**
-     * Dummy method in case the user changes locale while the create acct view
-     * is displayed.
+     * Dummy method in case the user changes locale while the create acct view is displayed.
      */
     @GetMapping("/" + CREATE_ACCT_URL)
-    public String getMetCreateAccount(@Valid CreateAcctForm createAcctForm,
-                                      BindingResult bindingResult,
+    public String getMetCreateAccount(@Valid CreateAcctForm createAcctForm, BindingResult bindingResult,
                                       FindAcctForm findAcctForm) {
         LOGGER.trace("Get of account creation data.");
         LOGGER.trace("Form data: " + createAcctForm);
@@ -106,28 +115,30 @@ public class AcctController {
      * @param findAcctForm  Content of the find account form.
      * @param bindingResult Validation result for the find account form.
      * @param model         Model objects used by the account page.
-     * @return The account page url if validation succeeds.
+     * @return The account page url if validation succeeds and account is found. Returns the error page url if account
+     * is not found
      */
     @PostMapping("/" + FIND_ACCT_URL)
-    public String findAccount(@Valid FindAcctForm findAcctForm,
-                              BindingResult bindingResult, Model model) {
+    public String findAccount(@Valid FindAcctForm findAcctForm, BindingResult bindingResult, Model model) {
         LOGGER.trace("Post of account search data.");
         LOGGER.trace("Form data: " + findAcctForm);
         if (bindingResult.hasErrors()) {
             model.addAttribute(CREATE_ACCT_FORM_OBJ_NAME, new CreateAcctForm());
             return SELECT_ACCT_PAGE_URL;
         }
-        return showAcctPage(model, new DepositOrWithdrawForm(),
-                            new DepositOrWithdrawForm());
+        currentAcct = service.findAccount(findAcctForm.getNumber());
+        if (currentAcct == null) {
+            model.addAttribute(ExceptionHandlers.ERROR_TYPE_KEY, ExceptionHandlers.ACCT_NOT_FOUND);
+            return ExceptionHandlers.ERROR_PAGE_URL;
+        }
+        return showAcctPage(model, new DepositOrWithdrawForm(), new DepositOrWithdrawForm());
     }
 
     /**
-     * Dummy method in case the user changes locale while the find acct view is
-     * displayed.
+     * Dummy method in case the user changes locale while the find acct view is displayed.
      */
     @GetMapping("/" + FIND_ACCT_URL)
-    public String getMetFindAccount(@Valid FindAcctForm findAcctForm,
-                                    BindingResult bindingResult,
+    public String getMetFindAccount(@Valid FindAcctForm findAcctForm, BindingResult bindingResult,
                                     CreateAcctForm createAcctForm) {
         LOGGER.trace("Get of account search data.");
         LOGGER.trace("Form data: " + findAcctForm);
@@ -143,8 +154,7 @@ public class AcctController {
     @GetMapping("/" + ACCT_PAGE_URL)
     public String showAccountView(Model model) {
         LOGGER.trace("Call to account view.");
-        return showAcctPage(model, new DepositOrWithdrawForm(),
-                            new DepositOrWithdrawForm());
+        return showAcctPage(model, new DepositOrWithdrawForm(), new DepositOrWithdrawForm());
     }
 
     /**
@@ -156,22 +166,27 @@ public class AcctController {
      * @return The account page url.
      */
     @PostMapping("/" + DEPOSIT_URL)
-    public String deposit(
-        @Valid @ModelAttribute(DEPOSIT_FORM_OBJ_NAME) DepositOrWithdrawForm depositForm,
-        BindingResult bindingResult, Model model) {
+    public String deposit(@Valid @ModelAttribute(DEPOSIT_FORM_OBJ_NAME) DepositOrWithdrawForm depositForm,
+                          BindingResult bindingResult, Model model) throws IllegalBankTransactionException {
         LOGGER.trace("Post of deposit data.");
         LOGGER.trace("Form data: " + depositForm);
+        if (!bindingResult.hasErrors()) {
+            service.deposit(currentAcct, depositForm.getAmount());
+            updateCurrentAcct();
+        }
         return showAcctPage(model, null, new DepositOrWithdrawForm());
     }
 
+    private void updateCurrentAcct() {
+        currentAcct = service.findAccount(currentAcct.getAcctNo());
+    }
+
     /**
-     * Dummy method in case the user changes locale while the deposit view is
-     * displayed.
+     * Dummy method in case the user changes locale while the deposit view is displayed.
      */
     @GetMapping("/" + DEPOSIT_URL)
-    public String getMetDeposit(
-        @Valid @ModelAttribute(DEPOSIT_FORM_OBJ_NAME) DepositOrWithdrawForm depositForm,
-        BindingResult bindingResult, Model model) {
+    public String getMetDeposit(@Valid @ModelAttribute(DEPOSIT_FORM_OBJ_NAME) DepositOrWithdrawForm depositForm,
+                                BindingResult bindingResult, Model model) {
         LOGGER.trace("Get of deposit data.");
         LOGGER.trace("Form data: " + depositForm);
         return showAcctPage(model, null, new DepositOrWithdrawForm());
@@ -186,22 +201,23 @@ public class AcctController {
      * @return The account page url.
      */
     @PostMapping("/" + WITHDRAW_URL)
-    public String withdraw(
-        @Valid @ModelAttribute(WITHDRAW_FORM_OBJ_NAME) DepositOrWithdrawForm withdrawForm,
-        BindingResult bindingResult, Model model) {
+    public String withdraw(@Valid @ModelAttribute(WITHDRAW_FORM_OBJ_NAME) DepositOrWithdrawForm withdrawForm,
+                           BindingResult bindingResult, Model model) throws IllegalBankTransactionException {
         LOGGER.trace("Post of withdraw data.");
         LOGGER.trace("Form data: " + withdrawForm);
+        if (!bindingResult.hasErrors()) {
+            service.withdraw(currentAcct, withdrawForm.getAmount());
+            updateCurrentAcct();
+        }
         return showAcctPage(model, new DepositOrWithdrawForm(), null);
     }
 
     /**
-     * Dummy method in case the user changes locale while the withdraw view is
-     * displayed.
+     * Dummy method in case the user changes locale while the withdraw view is displayed.
      */
     @GetMapping("/" + WITHDRAW_URL)
-    public String getMetWithdraw(
-        @Valid @ModelAttribute(WITHDRAW_FORM_OBJ_NAME) DepositOrWithdrawForm withdrawForm,
-        BindingResult bindingResult, Model model) {
+    public String getMetWithdraw(@Valid @ModelAttribute(WITHDRAW_FORM_OBJ_NAME) DepositOrWithdrawForm withdrawForm,
+                                 BindingResult bindingResult, Model model) {
         LOGGER.trace("Get of withdraw data.");
         LOGGER.trace("Form data: " + withdrawForm);
         return showAcctPage(model, new DepositOrWithdrawForm(), null);
