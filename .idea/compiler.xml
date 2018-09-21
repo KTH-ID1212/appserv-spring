@@ -9,5 +9,8 @@
         <module name="appservspring" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="appservspring" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

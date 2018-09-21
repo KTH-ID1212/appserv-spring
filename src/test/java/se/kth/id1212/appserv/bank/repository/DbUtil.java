@@ -65,7 +65,7 @@ public class DbUtil {
         Class.forName("org.mariadb.jdbc.Driver");
         Connection con = DriverManager.getConnection(
             "jdbc:mariadb://localhost:3306/appservspringbank?serverTimezone" +
-            "=UTC", System.getProperty("spring.datasource.username"), System.getProperty("spring.datasource.pasword"));
+            "=UTC", System.getProperty("spring.datasource.username"), System.getProperty("spring.datasource.password"));
         DbUtil runner = new DbUtil(con, false);
         runner.runScript(new BufferedReader(new FileReader(
             "src/main/scripts/db/create-appservspringbank-mariadb.sql")));
