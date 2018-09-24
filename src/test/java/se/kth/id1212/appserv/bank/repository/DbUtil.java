@@ -28,13 +28,22 @@ package se.kth.id1212.appserv.bank.repository;
  *  limitations under the License.
  */
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -42,33 +51,40 @@ import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) //Default scope, this annotation is not required.
 public class DbUtil {
-
-    private static final Pattern delimP = Pattern
-        .compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$",
-                 Pattern.CASE_INSENSITIVE);
+    private static final Pattern delimP =
+        Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
     private static final String DEFAULT_DELIMITER = ";";
-    private final Connection connection;
-
-    private final boolean autoCommit;
-
+    private static DataSource db;
+    private boolean autoCommit;
     private String delimiter = DEFAULT_DELIMITER;
     private boolean fullLineDelimiter = false;
+    @Autowired
+    private Environment env;
 
-    private DbUtil(Connection connection, boolean autoCommit) {
-        this.connection = connection;
-        this.autoCommit = autoCommit;
+    @PostConstruct
+    public void createPool() {
+        if (db == null) {
+            HikariConfig config = new HikariConfig();
+            config.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+            config.setJdbcUrl(env.getProperty("spring.datasource.url"));
+            config.setUsername(env.getProperty("spring.datasource.username"));
+            config.setPassword(env.getProperty("spring.datasource.password"));
+            db = new HikariDataSource(config);
+        }
+        autoCommit = false;
     }
 
-    public static void emptyDb()
-        throws SQLException, IOException, ClassNotFoundException {
-        Class.forName("org.mariadb.jdbc.Driver");
-        Connection con = DriverManager.getConnection(
-            "jdbc:mariadb://localhost:3306/appservspringbank?serverTimezone" +
-            "=UTC", System.getProperty("spring.datasource.username"), System.getProperty("spring.datasource.password"));
-        DbUtil runner = new DbUtil(con, false);
-        runner.runScript(new BufferedReader(new FileReader(
-            "src/main/scripts/db/create-appservspringbank-mariadb.sql")));
+    /**
+     * Drops all tables and creates a new, empty, bank database, by executing the script specified in the property
+     * <code>se.kth.id1212.db.emptydb</code>. Database driver, url, username and password are read from the following
+     * properties: <code>spring.datasource.driver-class-name</code>, <code>spring.datasource.url</code>,
+     * <code>spring.datasource.username</code>, <code>spring.datasource.password</code>
+     */
+    public void emptyDb() throws IOException {
+        runScript(new BufferedReader(new FileReader(env.getProperty("se.kth.id1212.db.emptydb"))));
     }
 
     private void setDelimiter(String delimiter, boolean fullLineDelimiter) {
@@ -76,8 +92,8 @@ public class DbUtil {
         this.fullLineDelimiter = fullLineDelimiter;
     }
 
-    private void runScript(Reader reader) throws IOException, SQLException {
-        try {
+    private void runScript(Reader reader) {
+        try (Connection connection = db.getConnection()) {
             boolean originalAutoCommit = connection.getAutoCommit();
             try {
                 if (originalAutoCommit != this.autoCommit) {
@@ -109,15 +125,11 @@ public class DbUtil {
                     setDelimiter(delimMatch.group(2), false);
                 } else if (trimmedLine.startsWith("--")) {
                     // Do nothing
-                } else if (trimmedLine.length() < 1 ||
-                           trimmedLine.startsWith("--")) {
+                } else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
                     // Do nothing
-                } else if (!fullLineDelimiter &&
-                           trimmedLine.endsWith(getDelimiter()) ||
-                           fullLineDelimiter &&
-                           trimmedLine.equals(getDelimiter())) {
-                    command.append(
-                        line.substring(0, line.lastIndexOf(getDelimiter())));
+                } else if (!fullLineDelimiter && trimmedLine.endsWith(getDelimiter()) ||
+                           fullLineDelimiter && trimmedLine.equals(getDelimiter())) {
+                    command.append(line.substring(0, line.lastIndexOf(getDelimiter())));
                     command.append(" ");
                     this.execCommand(conn, command, lineReader);
                     command = null;
@@ -139,8 +151,7 @@ public class DbUtil {
         }
     }
 
-    private void execCommand(Connection conn, StringBuffer command,
-                             LineNumberReader lineReader) throws SQLException {
+    private void execCommand(Connection conn, StringBuffer command, LineNumberReader lineReader) throws SQLException {
         Statement statement = conn.createStatement();
 
         boolean hasResults = false;
