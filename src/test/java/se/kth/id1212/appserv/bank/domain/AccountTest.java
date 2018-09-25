@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.TransactionSystemException;
 import se.kth.id1212.appserv.bank.repository.AccountRepository;
 import se.kth.id1212.appserv.bank.repository.DbUtil;
@@ -36,27 +40,35 @@ import static org.hamcrest.Matchers.not;
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
     // @EnableAutoConfiguration and @ComponentScan, but are we using
     // JUnit5 in that case?
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, AccountTest.class})
 @NotThreadSafe
-class AccountTest {
+class AccountTest implements TestExecutionListener {
+    @Autowired
+    private DbUtil dbUtil;
     @Autowired
     private AccountRepository repository;
     private Account instance;
 
-    @BeforeAll
-    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
-        throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+    @Override
+    public void beforeTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        dbUtil = testContext.getApplicationContext().getBean(DbUtil.class);
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
     }
 
-    @AfterAll
-    static void cleanup()
+    @Override
+    public void afterTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
+    }
+
+    private void enableCreatingEMFWhichIsNeededForTheApplicationContext()
         throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
     }
 
     @BeforeEach
-    void setup() {
+    void setup() throws SQLException, IOException, ClassNotFoundException {
         instance = new Account(new Holder("holderName"), 10);
+        dbUtil.emptyDb();
     }
 
     @Test
@@ -79,7 +91,6 @@ class AccountTest {
     @Test
     void testValidAcctIsPersisted()
         throws IOException, SQLException, ClassNotFoundException {
-        DbUtil.emptyDb();
         repository.save(instance);
         List<Account> holdersInDb = repository.findAll();
         assertThat(holdersInDb, containsInAnyOrder(instance));
@@ -89,7 +100,6 @@ class AccountTest {
     void testZeroBalanceIsValid()
         throws IOException, SQLException, ClassNotFoundException {
         Account acctWithZeroBalance = new Account(instance.getHolder(), 0);
-        DbUtil.emptyDb();
         repository.save(acctWithZeroBalance);
         List<Account> holdersInDb = repository.findAll();
         assertThat(holdersInDb, containsInAnyOrder(acctWithZeroBalance));

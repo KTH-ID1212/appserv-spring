@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import se.kth.id1212.appserv.bank.domain.Holder;
 
 import java.io.IOException;
@@ -26,28 +30,35 @@ import static org.hamcrest.Matchers.is;
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
     // @EnableAutoConfiguration and @ComponentScan, but are we using
     // JUnit5 in that case?
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, HolderRepositoryTest.class})
 @NotThreadSafe
-class HolderRepositoryTest {
+class HolderRepositoryTest implements TestExecutionListener {
+    @Autowired
+    private DbUtil dbUtil;
     @Autowired
     private HolderRepository instance;
     private Holder holder;
 
-    @BeforeAll
-    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
-        throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+    @Override
+    public void beforeTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        dbUtil = testContext.getApplicationContext().getBean(DbUtil.class);
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
     }
 
-    @AfterAll
-    static void cleanup()
+    @Override
+    public void afterTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
+    }
+
+    private void enableCreatingEMFWhichIsNeededForTheApplicationContext()
         throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
     }
 
     @BeforeEach
     void setup() throws SQLException, IOException, ClassNotFoundException {
         holder = new Holder("holderName");
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
     }
 
     @Test
