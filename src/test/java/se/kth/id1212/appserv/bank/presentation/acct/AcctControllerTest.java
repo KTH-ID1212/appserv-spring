@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,7 +23,6 @@ import se.kth.id1212.appserv.bank.domain.Holder;
 import se.kth.id1212.appserv.bank.presentation.error.ExceptionHandlers;
 import se.kth.id1212.appserv.bank.repository.AccountRepository;
 import se.kth.id1212.appserv.bank.repository.DbUtil;
-import se.kth.id1212.appserv.bank.repository.HolderRepository;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -47,32 +50,38 @@ import static se.kth.id1212.appserv.bank.presentation.PresentationTestHelper.sen
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
     // @EnableAutoConfiguration and @ComponentScan, but are we using
     // JUnit5 in that case?
-class AcctControllerTest {
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, AcctControllerTest.class})
+class AcctControllerTest implements TestExecutionListener {
+    @Autowired
+    private DbUtil dbUtil;
     @Autowired
     AccountRepository acctRepo;
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
-    @Autowired
-    private HolderRepository holderRepo;
     private Account acct;
     private Holder holder;
 
-    @BeforeAll
-    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
-        throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+    @Override
+    public void beforeTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        dbUtil = testContext.getApplicationContext().getBean(DbUtil.class);
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
     }
 
-    @AfterAll
-    static void cleanDb() throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+    @Override
+    public void afterTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
+    }
+
+    private void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+        throws SQLException, IOException, ClassNotFoundException {
+        dbUtil.emptyDb();
     }
 
     @BeforeEach
     void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webappContext).build();
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
         holder = new Holder("holderName");
         acct = new Account(holder, 10);
     }

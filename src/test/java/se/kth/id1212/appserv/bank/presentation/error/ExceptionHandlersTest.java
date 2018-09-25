@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -30,15 +34,23 @@ import static se.kth.id1212.appserv.bank.presentation.PresentationTestHelper.con
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
     // @EnableAutoConfiguration and @ComponentScan, but are we using
     // JUnit5 in that case?
-class ExceptionHandlersTest {
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, ExceptionHandlersTest.class})
+class ExceptionHandlersTest implements TestExecutionListener {
+    @Autowired
+    private DbUtil dbUtil;
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
 
-    @BeforeAll
-    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+    @Override
+    public void beforeTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        dbUtil = testContext.getApplicationContext().getBean(DbUtil.class);
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
+    }
+
+    private void enableCreatingEMFWhichIsNeededForTheApplicationContext()
         throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
     }
 
     @BeforeEach

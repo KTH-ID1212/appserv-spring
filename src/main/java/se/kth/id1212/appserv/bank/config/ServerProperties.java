@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Contains properties from application.properities, starting with 'se.kth
  * .id1212.server'.
  */
-@ConfigurationProperties(prefix = "se.kth.id1212.server")
+@ConfigurationProperties(prefix = "se.kth.id1212.bank.server")
 public class ServerProperties {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             ServerProperties.class);
