@@ -6,8 +6,9 @@ jdk:
 addons:
   mariadb: '10.3'
 env:
-  - MYSQL_PORT_3306_TCP_ADDR=localhost
-  - MYSQL_PORT_3306_TCP_PORT=3306
+  global:
+    - MYSQL_PORT_3306_TCP_ADDR=localhost
+    - MYSQL_PORT_3306_TCP_PORT=3306
 before_script:
 - mysql -e "CREATE DATABASE appservspringbank;" -u root
 #services:
