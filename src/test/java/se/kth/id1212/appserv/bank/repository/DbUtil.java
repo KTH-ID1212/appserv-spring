@@ -66,6 +66,7 @@ public class DbUtil {
 
     @PostConstruct
     public void createPool() {
+        autoCommit = false;
         if (db == null) {
             HikariConfig config = new HikariConfig();
             config.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
@@ -74,7 +75,6 @@ public class DbUtil {
             config.setPassword(env.getProperty("spring.datasource.password"));
             db = new HikariDataSource(config);
         }
-        autoCommit = false;
     }
 
     /**
