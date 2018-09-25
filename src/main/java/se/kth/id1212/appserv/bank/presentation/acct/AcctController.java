@@ -103,7 +103,7 @@ public class AcctController {
      */
     @GetMapping("/" + CREATE_ACCT_URL)
     public String getMetCreateAccount(@Valid CreateAcctForm createAcctForm, BindingResult bindingResult,
-                                      FindAcctForm findAcctForm) {
+                                      FindAcctForm findAcctForm, Model model) {
         LOGGER.trace("Get of account creation data.");
         LOGGER.trace("Form data: " + createAcctForm);
         return SELECT_ACCT_PAGE_URL;
@@ -173,6 +173,7 @@ public class AcctController {
         if (!bindingResult.hasErrors()) {
             service.deposit(currentAcct, depositForm.getAmount());
             updateCurrentAcct();
+            return showAcctPage(model, new DepositOrWithdrawForm(), new DepositOrWithdrawForm());
         }
         return showAcctPage(model, null, new DepositOrWithdrawForm());
     }
@@ -208,6 +209,7 @@ public class AcctController {
         if (!bindingResult.hasErrors()) {
             service.withdraw(currentAcct, withdrawForm.getAmount());
             updateCurrentAcct();
+            return showAcctPage(model, new DepositOrWithdrawForm(), new DepositOrWithdrawForm());
         }
         return showAcctPage(model, new DepositOrWithdrawForm(), null);
     }

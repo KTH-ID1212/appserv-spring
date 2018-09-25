@@ -9,7 +9,11 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,15 +43,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     //@SpringBootTest can be used instead of @SpringJUnitWebConfig,
     // @EnableAutoConfiguration and @ComponentScan, but are we using
     // JUnit5 in that case?
-class BankConfigTest {
+@TestExecutionListeners(listeners = {DependencyInjectionTestExecutionListener.class, BankConfigTest.class})
+class BankConfigTest implements TestExecutionListener {
+    @Autowired
+    private DbUtil dbUtil;
     @Autowired
     private WebApplicationContext webappContext;
     private MockMvc mockMvc;
 
-    @BeforeAll
-    static void enableCreatingEMFWhichIsNeededForTheApplicationContext()
+    @Override
+    public void beforeTestClass(TestContext testContext) throws SQLException, IOException, ClassNotFoundException {
+        dbUtil = testContext.getApplicationContext().getBean(DbUtil.class);
+        enableCreatingEMFWhichIsNeededForTheApplicationContext();
+    }
+
+    private void enableCreatingEMFWhichIsNeededForTheApplicationContext()
         throws SQLException, IOException, ClassNotFoundException {
-        DbUtil.emptyDb();
+        dbUtil.emptyDb();
     }
 
     @BeforeEach
