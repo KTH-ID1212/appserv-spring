@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
  * A form bean for the search account form.
  */
 class FindAcctForm {
-    @NotNull(message = "{find-acct.number.missing}")
+    @NotNull(message = "Please specify account number")
     private Long number;
 
     /**

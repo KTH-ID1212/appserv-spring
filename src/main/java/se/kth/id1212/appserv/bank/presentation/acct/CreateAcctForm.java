@@ -12,17 +12,15 @@ import javax.validation.constraints.Size;
  * A form bean for the account creation form.
  */
 class CreateAcctForm {
-    @NotBlank(message = "{create-acct.holder-name.missing}")
+    @NotBlank(message = "Please specify holder name")
     // The regex below should permit only characters, but asterisk is
     // unfortunately also valid.
-    @Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "{create-acct" +
-                                                      ".holder-name" +
-                                                      ".invalid-char}")
-    @Size(min = 2, max = 30, message = "{create-acct.holder-name.length}")
+    @Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "Only letters are allowed")
+    @Size(min = 2, max = 30, message = "Name must have min 2 and max 30 characters")
     private String holderName;
 
-    @NotNull(message = "{create-acct.balance.missing}")
-    @PositiveOrZero(message = "{create-acct.balance.negative}")
+    @NotNull(message = "Please specify balance")
+    @PositiveOrZero(message = "Balance must be zero or greater")
     private Integer balance;
 
     /**

@@ -9,8 +9,8 @@ import javax.validation.constraints.Positive;
  * A form bean for the deposit form.
  */
 class DepositOrWithdrawForm {
-    @NotNull(message = "{amt.missing}")
-    @Positive(message = "{amt.not-pos}")
+    @NotNull(message = "Please specify amount")
+    @Positive(message = "Amount must be greater than zero")
     private Integer amount;
 
     /**

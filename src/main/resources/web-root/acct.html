@@ -9,40 +9,40 @@
 <main layout:fragment="content">
 
     <section>
-        <h1 th:text="#{acct.details}">Account</h1>
-        <p class="info" th:text="#{acct.details.info}">Current account details</p>
+        <h1>Account</h1>
+        <p class="info">Current account details</p>
         <p class="form" th:object="${currentAcct}">
-            <span th:text="#{acct.details.holderName-no}">Holder number</span>: <span th:text="*{holder.holderNo}">123</span>,
-            <span th:text="#{acct.details.holderName-name}">Holder name</span>: <span th:text="*{holder.name}">123</span>,
-            <span th:text="#{acct.details.acct-no}">Account number</span>: <span th:text="*{acctNo}">123</span>,
-            <span th:text="#{acct.details.balance}">Balance</span>: <span th:text="*{balance}">123</span> SEK
+            Holder number: <span th:text="*{holder.holderNo}">Missing</span>,
+            Holder name: <span th:text="*{holder.name}">Missing</span>,
+            Account number: <span th:text="*{acctNo}">Missing</span>,
+            Balance: <span th:text="*{balance}">Missing</span> SEK
         </p>
     </section>
 
     <section>
-        <h1 th:text="#{acct.deposit}">Deposit</h1>
-        <p class="info" th:text="#{acct.deposit.info}">Please enter amount to deposit</p>
+        <h1>Deposit</h1>
+        <p class="info">Please enter amount to deposit</p>
         <form th:action="@{/deposit}" th:object="${depositForm}" method="post">
-            <p class="form"><label for="deposit-amt" th:text="#{acct.deposit.amt}">Amount</label>:<input type="text"
-                                                                                                         th:field="*{amount}"
-                                                                                                         id="deposit-amt"/>
+            <p class="form"><label for="deposit-amt">Amount</label>:<input type="text"
+                                                                           th:field="*{amount}"
+                                                                           id="deposit-amt"/>
                 <span class="error" th:if="${#fields.hasErrors('amount')}"
                       th:errors="*{amount}">Amount Error</span></p>
-            <p class="submit"><input type="submit" th:value="#{acct.deposit.submit}"/></p>
+            <p class="submit"><input type="submit" value="Deposit"/></p>
         </form>
     </section>
 
     <section>
-        <h1 th:text="#{acct.withdraw}">Withdraw</h1>
-        <p class="info" th:text="#{acct.withdraw.info}">Please enter amount to withdraw</p>
+        <h1>Withdraw</h1>
+        <p class="info">Please enter amount to withdraw</p>
         <form th:action="@{/withdraw}" th:object="${withdrawForm}" method="post">
-            <p class="form"><label for="withdraw-amt" th:text="#{acct.withdraw.amt}">Amount</label>:<input type="text"
-                                                                                                           th:field="*{amount}"
-                                                                                                           id="withdraw-amt"/>
+            <p class="form"><label for="withdraw-amt">Amount</label>:<input type="text"
+                                                                            th:field="*{amount}"
+                                                                            id="withdraw-amt"/>
                 <span class="error"
                       th:if="${#fields.hasErrors('amount')}"
                       th:errors="*{amount}">Amount Error</span></p>
-            <p class="submit"><input type="submit" th:value="#{acct.withdraw.submit}"/></p>
+            <p class="submit"><input type="submit" value="Withdraw"/></p>
         </form>
     </section>
 
