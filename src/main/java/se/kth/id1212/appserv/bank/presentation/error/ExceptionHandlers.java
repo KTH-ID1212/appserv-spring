@@ -1,7 +1,5 @@
 package se.kth.id1212.appserv.bank.presentation.error;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -24,12 +22,18 @@ import javax.servlet.http.HttpServletResponse;
 public class ExceptionHandlers implements ErrorController {
     public static final String ERROR_PAGE_URL = "error";
     public static final String ERROR_TYPE_KEY = "errorType";
-    public static final String GENERIC_ERROR = "generic";
-    public static final String ACCT_NOT_FOUND = "acct-not-found";
-    public static final String DEPOSIT_FAILED = "deposit";
-    public static final String WITHDRAWAL_FAILED = "withdraw";
+    public static final String ERROR_INFO_KEY = "errorInfo";
+    public static final String GENERIC_ERROR = "Operation Failed";
+    public static final String GENERIC_ERROR_INFO = "Sorry, it didn't work. Please try again.";
+    public static final String ACCT_NOT_FOUND = "No Account Found";
+    public static final String ACCT_NOT_FOUND_INFO = "There is no account with the specified number.";
+    public static final String DEPOSIT_FAILED = "Deposit Failed";
+    public static final String DEPOSIT_FAILED_INFO = "It was not possible to deposit the specified amount to the specified account.";
+    public static final String WITHDRAWAL_FAILED = "Withdrawal Failed";
+    public static final String WITHDRAWAL_FAILED_INFO = "It was not possible to withdraw the specified amount from the specified account.";
+    public static final String HTTP_404 = "The page could not be found";
+    public static final String HTTP_404_INFO = "Sorry, but there is no such page. We would like to fix this error, please tell us what you where trying to do.";
     static final String ERROR_PATH = "failure";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlers.class);
 
     /**
      * Exception handler for broken business rules.
@@ -37,16 +41,19 @@ public class ExceptionHandlers implements ErrorController {
      * @return An appropriate error page.
      */
     @ExceptionHandler(IllegalBankTransactionException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public String handleException(IllegalBankTransactionException exception, Model model) {
-        logExceptionDebugLevel(exception);
         if (exception.getMessage().toUpperCase().contains("DEPOSIT")) {
             model.addAttribute(ERROR_TYPE_KEY, DEPOSIT_FAILED);
+            model.addAttribute(ERROR_INFO_KEY, DEPOSIT_FAILED_INFO);
         } else if (exception.getMessage().toUpperCase().contains("WITHDRAW")) {
             model.addAttribute(ERROR_TYPE_KEY, WITHDRAWAL_FAILED);
+            model.addAttribute(ERROR_INFO_KEY, WITHDRAWAL_FAILED_INFO);
         } else {
             model.addAttribute(ERROR_TYPE_KEY, GENERIC_ERROR);
-        } return ERROR_PAGE_URL;
+            model.addAttribute(ERROR_INFO_KEY, GENERIC_ERROR_INFO);
+        }
+        return ERROR_PAGE_URL;
     }
 
     /**
@@ -58,26 +65,22 @@ public class ExceptionHandlers implements ErrorController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Exception exception, Model model) {
-        logExceptionErrorLevel(exception);
         model.addAttribute(ERROR_TYPE_KEY, GENERIC_ERROR);
         return ERROR_PAGE_URL;
     }
 
-    private void logExceptionErrorLevel(Exception exception) {
-        LOGGER.error("Exception handler got {}: {}", exception.getClass().getName(), exception.getMessage(), exception);
-    }
-
-    private void logExceptionDebugLevel(Exception exception) {
-        LOGGER.debug("Exception handler got {}: {}", exception.getClass().getName(), exception.getMessage(), exception);
-    }
-
     @GetMapping("/" + ERROR_PATH)
     public String handleHttpError(HttpServletRequest request, HttpServletResponse response, Model model) {
-        LOGGER
-            .debug("Http error handler got Http status: {}", request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
-        String statusCode = extractHttpStatusCode(request);
-        model.addAttribute(ERROR_TYPE_KEY, statusCode);
-        response.setStatus(Integer.parseInt(statusCode));
+        int statusCode = Integer.parseInt(extractHttpStatusCode(request));
+        if (statusCode == HttpStatus.NOT_FOUND.value()) {
+            model.addAttribute(ERROR_TYPE_KEY, HTTP_404);
+            model.addAttribute(ERROR_INFO_KEY, HTTP_404_INFO);
+            response.setStatus(statusCode);
+        } else {
+            model.addAttribute(ERROR_TYPE_KEY, GENERIC_ERROR);
+            model.addAttribute(ERROR_INFO_KEY, GENERIC_ERROR_INFO);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
         return ERROR_PAGE_URL;
     }
 
