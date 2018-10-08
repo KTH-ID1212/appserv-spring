@@ -1,6 +1,5 @@
 package se.kth.id1212.appserv.bank.domain;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ class BeanFactory implements ApplicationContextAware {
     }
 
     @Override
-    @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
     public void setApplicationContext(ApplicationContext applicationContext) {
         context = applicationContext;
     }
