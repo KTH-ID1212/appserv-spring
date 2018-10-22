@@ -3,6 +3,7 @@ package se.kth.id1212.appserv.bank.repository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.kth.id1212.appserv.bank.domain.Holder;
 
@@ -10,7 +11,7 @@ import se.kth.id1212.appserv.bank.domain.Holder;
  * Contains all database access concerning holders.
  */
 @Repository
-@Transactional
+@Transactional(propagation = Propagation.MANDATORY)
 public interface HolderRepository extends JpaRepository<Holder, Long> {
     // /**
     //  * Searches for all holders with the specified name.

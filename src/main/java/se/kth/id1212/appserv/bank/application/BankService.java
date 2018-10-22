@@ -2,6 +2,7 @@ package se.kth.id1212.appserv.bank.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import se.kth.id1212.appserv.bank.domain.Account;
 import se.kth.id1212.appserv.bank.domain.AccountDTO;
@@ -19,7 +20,7 @@ import se.kth.id1212.appserv.bank.repository.HolderRepository;
  * transaction starts when a method is called from the presentation layer, and ends (commit or rollback) when that
  * method returns.</p>
  */
-@Transactional(rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 @Service
 public class BankService {
     @Autowired
